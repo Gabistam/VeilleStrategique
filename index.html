@@ -1,0 +1,2322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J1-S1 : La Veille Stratégique - Concepts et Pratiques</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            min-height: 100vh;
+        }
+        
+        .section-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .section-card:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(148, 163, 184, 0.2);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .chapter-number {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .quiz-option {
+            background: rgba(30, 41, 59, 0.4);
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .quiz-option:hover {
+            background: rgba(30, 41, 59, 0.7);
+            border-color: rgba(96, 165, 250, 0.5);
+            transform: translateX(5px);
+        }
+        
+        .quiz-option.selected {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+        
+        .quiz-option.correct {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: #22c55e;
+        }
+        
+        .quiz-option.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+            height: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .example-card {
+            background: rgba(15, 23, 42, 0.6);
+            border-left: 3px solid #8b5cf6;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        ul.custom-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        ul.custom-list li {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        ul.custom-list li:before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+            font-weight: bold;
+        }
+        
+        .subsection-title {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .score-badge {
+            background: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        details summary {
+            cursor: pointer;
+            user-select: none;
+            padding: 3rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        details summary:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        details[open] summary {
+            background: rgba(59, 130, 246, 0.2);
+            border-bottom: 2px solid #3b82f6;
+            margin-bottom: 4rem;
+        }
+
+        details {
+            margin-bottom: 4rem;
+        }
+
+        details > div {
+            margin-top: 3rem;
+        }
+
+        /* Espacement amélioré pour les sections */
+        section {
+            margin-bottom: 16rem;
+        }
+
+        .section-card {
+            margin-bottom: 8rem;
+        }
+
+        /* Espacement pour les paragraphes et divs */
+        p {
+            margin-bottom: 3rem;
+        }
+
+        .space-y-6 > * + * {
+            margin-top: 4rem;
+        }
+
+        .space-y-4 > * + * {
+            margin-top: 3rem;
+        }
+
+        .space-y-3 > * + * {
+            margin-top: 2.5rem;
+        }
+
+        /* Espacement des highlight-box */
+        .highlight-box {
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+            padding: 3rem;
+        }
+
+        /* Espacement des example-card */
+        .example-card {
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+            padding: 3rem;
+        }
+
+        /* Espacement des listes */
+        ul, ol {
+            margin-top: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        ul li, ol li {
+            margin-bottom: 2rem;
+        }
+
+        /* Espacement des titres */
+        h2, h3, h4 {
+            margin-top: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        h2:first-child, h3:first-child, h4:first-child {
+            margin-top: 0;
+        }
+
+        /* Espacement pour les divs avec bordures et backgrounds */
+        div[class*="bg-gradient"] {
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        div[class*="border-l-4"] {
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Espacement des grids */
+        .grid {
+            gap: 3rem;
+        }
+
+        /* Espacement pour les divs avec backgrounds spécifiques */
+        div[class*="bg-slate"] {
+            margin-top: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        div[class*="bg-blue"] {
+            margin-top: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        div[class*="bg-purple"] {
+            margin-top: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Augmente l'espacement des tableaux */
+        table {
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Espacement dans les quiz */
+        .quiz-option {
+            margin-bottom: 2rem;
+        }
+
+        .quiz-progress {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 4rem;
+        }
+
+        .quiz-progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(148, 163, 184, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .quiz-progress-dot.completed {
+            background: #22c55e;
+        }
+
+        .quiz-progress-dot.current {
+            background: #3b82f6;
+            transform: scale(1.5);
+        }
+
+        .quiz-option.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    </style>
+</head>
+<body class="text-gray-100">
+    <!-- Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-1 bg-gray-800 z-50">
+        <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="sticky top-1 z-40 py-6 px-4 backdrop-blur-md bg-slate-900/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold gradient-text">Veille Stratégique et Analyse des Tendances IA</h1>
+                    <p class="text-gray-400 mt-1">Jour 1 - Séance 1 : La Veille Stratégique - Concepts et Pratiques</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        
+        <!-- Objectifs -->
+        <section id="objectifs" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">01</span>
+                <span class="gradient-text">Objectifs de la séance</span>
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-400">Comprendre</h3>
+                    <p class="text-gray-300">Les différents types de veille et leurs enjeux spécifiques</p>
+                </div>
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-400">Maîtriser</h3>
+                    <p class="text-gray-300">Les spécificités de la veille stratégique et son rôle décisionnel</p>
+                </div>
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-400">Identifier</h3>
+                    <p class="text-gray-300">Les bénéfices business et l'impact sur la stratégie d'entreprise</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapitre 1 : Introduction à la veille -->
+        <section id="intro-veille" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">02</span>
+                <span class="gradient-text">Introduction à la veille</span>
+            </h2>
+
+            <div class="space-y-6">
+                <details class="mb-6">
+                    <summary class="text-lg font-semibold text-blue-300">📜 Définition et histoire</summary>
+                    <div class="p-6 space-y-6">
+                        <div>
+                            <h4 class="text-md font-semibold text-blue-300 mb-3">Qu'est-ce que la veille ?</h4>
+                            <p class="text-gray-300 leading-relaxed mb-4">
+                                La <strong class="text-blue-400">veille</strong> est un processus <em>continu et systématique</em> de collecte,
+                                d'analyse et de diffusion d'informations stratégiques permettant à une organisation d'anticiper
+                                les évolutions de son environnement et de prendre des décisions éclairées.
+                            </p>
+
+                            <div class="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-500/30 rounded-xl p-4">
+                                <p class="text-sm font-semibold text-blue-300 mb-3">🔍 Décomposons cette définition :</p>
+                                <div class="space-y-3 text-sm text-gray-300">
+                                    <div class="flex items-start space-x-3">
+                                        <span class="text-blue-400 font-bold">•</span>
+                                        <div>
+                                            <strong class="text-blue-300">Processus continu :</strong> La veille n'est pas ponctuelle.
+                                            Ce n'est pas "faire une recherche Google une fois". C'est une activité permanente,
+                                            intégrée au fonctionnement de l'organisation.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-3">
+                                        <span class="text-blue-400 font-bold">•</span>
+                                        <div>
+                                            <strong class="text-blue-300">Systématique :</strong> Méthodologie structurée avec des outils,
+                                            processus et responsabilités clairement définis. Pas d'improvisation.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-3">
+                                        <span class="text-blue-400 font-bold">•</span>
+                                        <div>
+                                            <strong class="text-blue-300">Informations stratégiques :</strong> Pas toute l'information disponible,
+                                            mais celle qui a un <em>impact sur la stratégie</em> de l'organisation.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-3">
+                                        <span class="text-blue-400 font-bold">•</span>
+                                        <div>
+                                            <strong class="text-blue-300">Anticiper :</strong> Vision prospective. L'objectif n'est pas de réagir
+                                            aux événements, mais de les <strong>prévoir</strong> avant qu'ils ne se produisent.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-3">
+                                        <span class="text-blue-400 font-bold">•</span>
+                                        <div>
+                                            <strong class="text-blue-300">Décisions éclairées :</strong> Finalité opérationnelle. La veille doit
+                                            mener à l'action, pas juste à l'accumulation d'informations.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-md font-semibold text-blue-300 mb-3">Veille vs autres concepts</h4>
+                            <div class="bg-slate-900/50 rounded-xl overflow-hidden">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-blue-900/30">
+                                        <tr>
+                                            <th class="text-left p-3 text-blue-300">Concept</th>
+                                            <th class="text-left p-3 text-blue-300">Définition</th>
+                                            <th class="text-left p-3 text-blue-300">Différence clé</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-700">
+                                        <tr>
+                                            <td class="p-3 font-semibold text-gray-200">Veille</td>
+                                            <td class="p-3 text-gray-300">Surveillance active et continue</td>
+                                            <td class="p-3 text-gray-300">Proactive, systématique</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3 font-semibold text-gray-200">Recherche d'info</td>
+                                            <td class="p-3 text-gray-300">Requête ponctuelle</td>
+                                            <td class="p-3 text-gray-300">Ponctuelle, pas de suivi</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3 font-semibold text-gray-200">Benchmarking</td>
+                                            <td class="p-3 text-gray-300">Comparaison avec concurrents</td>
+                                            <td class="p-3 text-gray-300">Focus sur les écarts</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3 font-semibold text-gray-200">Curation</td>
+                                            <td class="p-3 text-gray-300">Sélection de contenus pertinents</td>
+                                            <td class="p-3 text-gray-300">Pas d'analyse stratégique</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-3 font-semibold text-gray-200">Espionnage</td>
+                                            <td class="p-3 text-gray-300">Obtention illégale d'informations</td>
+                                            <td class="p-3 text-red-400">❌ Illégal</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-4 mt-3">
+                                <p class="text-xs text-yellow-200">
+                                    ⚠️ <strong>Important :</strong> La veille utilise exclusivement des <strong>sources ouvertes et légales</strong>
+                                    (OSINT - Open Source Intelligence). Tout ce qui relève de l'espionnage industriel, du vol de données
+                                    ou de l'intrusion est strictement interdit et pénalement sanctionné.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-md font-semibold text-blue-300 mb-3">📚 Histoire et évolution</h4>
+
+                            <div class="space-y-4">
+                                <div class="border-l-4 border-purple-500 pl-4 bg-purple-900/10 p-4 rounded-r">
+                                    <h5 class="font-bold text-purple-200 mb-2">1960-1970 : Origines militaires</h5>
+                                    <p class="text-sm text-gray-300 mb-2">
+                                        Le concept moderne de veille stratégique émerge des pratiques de <strong>renseignement militaire</strong>
+                                        pendant la Guerre froide. L'idée : appliquer ces méthodes au monde de l'entreprise.
+                                    </p>
+                                    <div class="bg-slate-900/50 p-3 rounded mt-2">
+                                        <p class="text-xs text-gray-400 mb-1">🎖️ Apport militaire :</p>
+                                        <ul class="text-xs text-gray-300 space-y-1">
+                                            <li>• Méthodologie du <strong>cycle du renseignement</strong> (5 étapes)</li>
+                                            <li>• Notion de <strong>signaux faibles</strong> (early warning)</li>
+                                            <li>• Importance de la <strong>contre-intelligence</strong> (protection)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="border-l-4 border-blue-500 pl-4 bg-blue-900/10 p-4 rounded-r">
+                                    <h5 class="font-bold text-blue-200 mb-2">1980 : Le modèle japonais</h5>
+                                    <p class="text-sm text-gray-300 mb-2">
+                                        Le Japon systématise <em class="text-blue-400">l'intelligence économique</em> (経済情報 - keizai jōhō)
+                                        pour rattraper les USA. Le MITI (Ministère du Commerce) organise la collecte massive
+                                        d'informations technologiques à l'étranger.
+                                    </p>
+                                    <div class="bg-slate-900/50 p-3 rounded mt-2">
+                                        <p class="text-xs text-gray-400 mb-1">🇯🇵 Résultats concrets :</p>
+                                        <ul class="text-xs text-gray-300 space-y-1">
+                                            <li>• <strong>Sony, Toyota :</strong> Deviennent leaders mondiaux grâce à la veille technologique</li>
+                                            <li>• <strong>Brevets :</strong> Le Japon dépose plus de brevets que les USA dans les années 80</li>
+                                            <li>• <strong>Méthode :</strong> Envoi de milliers d'ingénieurs étudier à l'étranger (veille humaine)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="border-l-4 border-green-500 pl-4 bg-green-900/10 p-4 rounded-r">
+                                    <h5 class="font-bold text-green-200 mb-2">1990 : L'ère d'Internet</h5>
+                                    <p class="text-sm text-gray-300 mb-2">
+                                        Le web démocratise l'accès à l'information. Les outils de veille automatisée apparaissent
+                                        (agrégateurs RSS, moteurs de recherche, alertes Google).
+                                    </p>
+                                    <div class="bg-slate-900/50 p-3 rounded mt-2">
+                                        <p class="text-xs text-gray-400 mb-1">💻 Révolution numérique :</p>
+                                        <ul class="text-xs text-gray-300 space-y-1">
+                                            <li>• <strong>Volume :</strong> Explosion de l'information disponible</li>
+                                            <li>• <strong>Vitesse :</strong> Information en temps réel</li>
+                                            <li>• <strong>Problème :</strong> Infobésité - trop d'information tue l'information</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="border-l-4 border-pink-500 pl-4 bg-pink-900/10 p-4 rounded-r">
+                                    <h5 class="font-bold text-pink-200 mb-2">2020+ : Veille augmentée par l'IA</h5>
+                                    <p class="text-sm text-gray-300 mb-2">
+                                        L'IA générative (ChatGPT, Perplexity) et les outils d'automatisation transforment la veille.
+                                        Possibilité de traiter des volumes massifs et détecter des patterns invisibles à l'œil humain.
+                                    </p>
+                                    <div class="bg-slate-900/50 p-3 rounded mt-2">
+                                        <p class="text-xs text-gray-400 mb-1">🤖 Nouveaux enjeux :</p>
+                                        <ul class="text-xs text-gray-300 space-y-1">
+                                            <li>• <strong>Automatisation :</strong> Agents IA qui surveillent 24/7</li>
+                                            <li>• <strong>Synthèse :</strong> IA capable de résumer des centaines de sources</li>
+                                            <li>• <strong>Défi :</strong> Vérifier la fiabilité des outputs IA (hallucinations)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="example-card p-6 rounded-xl">
+                            <p class="text-sm text-gray-400 mb-2 font-semibold">💡 Anecdote historique</p>
+                            <p class="text-sm text-gray-300">
+                                <strong class="text-blue-300">Xerox PARC (1970s) :</strong> Le centre de recherche Xerox invente
+                                l'interface graphique, la souris, l'Ethernet... mais ne fait pas de veille concurrentielle.
+                                <strong class="text-purple-400">Résultat :</strong> Steve Jobs visite le PARC en 1979, voit ces innovations,
+                                et crée le Macintosh. Xerox perd des milliards. Moralité : <em>l'innovation sans veille sur son exploitation
+                                est inutile</em>.
+                            </p>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="mb-6">
+                    <summary class="text-lg font-semibold text-blue-300">🎯 Pourquoi faire de la veille ? Enjeux pour l'entreprise</summary>
+                    <div class="p-6 space-y-6">
+                        <div>
+                            <p class="text-gray-300 text-sm mb-4">
+                                Dans un environnement économique de plus en plus volatil, incertain et complexe (<strong class="text-blue-400">VUCA</strong> :
+                                Volatility, Uncertainty, Complexity, Ambiguity), la veille n'est plus un luxe mais une <em>nécessité stratégique</em>
+                                pour la survie et le développement de l'organisation.
+                            </p>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-red-900/30 to-orange-900/30 border-2 border-red-500/30 rounded-xl p-5">
+                            <h4 class="text-md font-semibold text-red-300 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">⚠️</span>
+                                Le coût de la non-veille
+                            </h4>
+                            <p class="text-sm text-gray-300 mb-4">
+                                Ne pas faire de veille, c'est naviguer à vue dans le brouillard. Les statistiques sont éloquentes :
+                            </p>
+                            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                <div class="bg-slate-900/50 p-4 rounded">
+                                    <p class="font-semibold text-red-300 mb-2">📉 Taux d'échec</p>
+                                    <p class="text-gray-300 text-xs">
+                                        <strong>70%</strong> des fusions-acquisitions échouent faute de veille préalable approfondie
+                                        sur la cible et le marché (Harvard Business Review)
+                                    </p>
+                                </div>
+                                <div class="bg-slate-900/50 p-4 rounded">
+                                    <p class="font-semibold text-red-300 mb-2">💸 Pertes financières</p>
+                                    <p class="text-gray-300 text-xs">
+                                        Les entreprises perdent en moyenne <strong>2-5%</strong> de leur CA annuel par manque
+                                        d'anticipation des évolutions du marché (Gartner)
+                                    </p>
+                                </div>
+                                <div class="bg-slate-900/50 p-4 rounded">
+                                    <p class="font-semibold text-red-300 mb-2">⏱️ Retard concurrentiel</p>
+                                    <p class="text-gray-300 text-xs">
+                                        Les entreprises sans veille mettent <strong>18 mois</strong> de plus à réagir aux
+                                        changements du marché que leurs concurrents vigilants
+                                    </p>
+                                </div>
+                                <div class="bg-slate-900/50 p-4 rounded">
+                                    <p class="font-semibold text-red-300 mb-2">🪦 Disparition</p>
+                                    <p class="text-gray-300 text-xs">
+                                        <strong>52%</strong> des entreprises du Fortune 500 de l'an 2000 ont disparu en 2020,
+                                        souvent pour n'avoir pas anticipé les ruptures
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-md font-semibold text-blue-300 mb-4">Les enjeux majeurs de la veille</h4>
+
+                            <div class="space-y-4">
+                                <!-- Enjeu 1 -->
+                                <div class="highlight-box p-6 rounded-xl">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="text-3xl">🔮</div>
+                                        <div class="flex-1">
+                                            <h5 class="font-semibold text-blue-300 mb-3 text-md">1. Anticiper les ruptures et disruptions</h5>
+                                            <p class="text-sm text-gray-300 mb-3">
+                                                Les disruptions ne tombent jamais du ciel. Elles émettent des <strong>signaux faibles</strong>
+                                                des années avant de devenir évidentes. La veille permet de les détecter à temps.
+                                            </p>
+                                            <div class="bg-slate-900/50 p-4 rounded">
+                                                <p class="text-xs font-semibold text-blue-300 mb-2">📊 Cas d'étude : Kodak vs Fujifilm</p>
+                                                <div class="text-xs text-gray-300 space-y-2">
+                                                    <p><strong class="text-red-400">❌ Kodak :</strong></p>
+                                                    <ul class="pl-4 space-y-1">
+                                                        <li>• Invente l'appareil photo numérique en <strong>1975</strong></li>
+                                                        <li>• Ne fait pas de veille sur les usages émergents</li>
+                                                        <li>• Ignore les signaux faibles (baisse ventes pellicules 1990s)</li>
+                                                        <li>• <strong>Résultat :</strong> Faillite en 2012, perd 140 000 emplois</li>
+                                                    </ul>
+                                                    <p class="mt-3"><strong class="text-green-400">✓ Fujifilm :</strong></p>
+                                                    <ul class="pl-4 space-y-1">
+                                                        <li>• Même point de départ (pellicules photo)</li>
+                                                        <li>• Veille active sur les usages numériques et marchés adjacents</li>
+                                                        <li>• Pivot vers cosmétiques, pharmaceutique, matériaux avancés</li>
+                                                        <li>• <strong>Résultat :</strong> CA multiplié par 2, entreprise florissante en 2025</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Enjeu 2 -->
+                                <div class="highlight-box p-6 rounded-xl">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="text-3xl">💎</div>
+                                        <div class="flex-1">
+                                            <h5 class="font-semibold text-purple-300 mb-3 text-md">2. Identifier opportunités et menaces (SWOT dynamique)</h5>
+                                            <p class="text-sm text-gray-300 mb-3">
+                                                L'analyse SWOT classique est statique. La veille transforme le SWOT en <strong>radar temps réel</strong>
+                                                des opportunités (O) et menaces (T) émergentes.
+                                            </p>
+                                            <div class="grid md:grid-cols-2 gap-3">
+                                                <div class="bg-green-900/20 border border-green-500/30 p-4 rounded">
+                                                    <p class="text-xs font-semibold text-green-300 mb-2">✨ Opportunités détectables</p>
+                                                    <ul class="text-xs text-gray-300 space-y-1">
+                                                        <li>• <strong>Marchés émergents :</strong> Nouveaux segments clients</li>
+                                                        <li>• <strong>Technologies :</strong> Innovations à intégrer</li>
+                                                        <li>• <strong>Partenariats :</strong> Acteurs complémentaires</li>
+                                                        <li>• <strong>Régulation :</strong> Nouvelles lois créant des besoins</li>
+                                                        <li>• <strong>Tendances :</strong> Évolutions sociétales porteuses</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="bg-red-900/20 border border-red-500/30 p-4 rounded">
+                                                    <p class="text-xs font-semibold text-red-300 mb-2">⚡ Menaces à anticiper</p>
+                                                    <ul class="text-xs text-gray-300 space-y-1">
+                                                        <li>• <strong>Nouveaux entrants :</strong> Startups disruptives</li>
+                                                        <li>• <strong>Substituts :</strong> Produits/services alternatifs</li>
+                                                        <li>• <strong>Régulation :</strong> Lois contraignantes (RGPD, AI Act)</li>
+                                                        <li>• <strong>Obsolescence :</strong> Technologies dépassées</li>
+                                                        <li>• <strong>Réputation :</strong> Crises d'image sectorielles</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="bg-slate-900/50 p-3 rounded mt-3">
+                                                <p class="text-xs text-gray-400 mb-1">🎯 Exemple concret :</p>
+                                                <p class="text-xs text-gray-300">
+                                                    <strong>Airbnb (2008) :</strong> Veille sur la crise financière → opportunité détectée
+                                                    (besoin de revenus complémentaires) → lancement au moment parfait → valorisation 100Md$ en 2025.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Enjeu 3 -->
+                                <div class="highlight-box p-6 rounded-xl">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="text-3xl">🧭</div>
+                                        <div class="flex-1">
+                                            <h5 class="font-semibold text-green-300 mb-3 text-md">3. Éclairer la prise de décision stratégique</h5>
+                                            <p class="text-sm text-gray-300 mb-3">
+                                                Les décisions stratégiques (lancer un produit, entrer sur un marché, acquérir une entreprise)
+                                                engagent des millions d'euros. La veille réduit le risque en apportant du <strong>fact-checking</strong>.
+                                            </p>
+                                            <div class="bg-slate-900/50 p-4 rounded">
+                                                <p class="text-xs font-semibold text-green-300 mb-2">🏢 Exemple : Lancement de produit</p>
+                                                <div class="grid md:grid-cols-2 gap-3 text-xs text-gray-300">
+                                                    <div>
+                                                        <p class="font-semibold text-red-300 mb-1">Sans veille :</p>
+                                                        <ul class="space-y-1 pl-3">
+                                                            <li>→ Décision basée sur l'intuition</li>
+                                                            <li>→ Risque : concurrent a déjà lancé</li>
+                                                            <li>→ Risque : besoin mal compris</li>
+                                                            <li>→ Taux d'échec : <strong>70-90%</strong></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div>
+                                                        <p class="font-semibold text-green-300 mb-1">Avec veille :</p>
+                                                        <ul class="space-y-1 pl-3">
+                                                            <li>→ Décision data-driven</li>
+                                                            <li>→ Timing optimal validé</li>
+                                                            <li>→ Positionnement différenciant</li>
+                                                            <li>→ Taux de succès : <strong>40-60%</strong></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Enjeu 4 -->
+                                <div class="highlight-box p-6 rounded-xl">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="text-3xl">🛡️</div>
+                                        <div class="flex-1">
+                                            <h5 class="font-semibold text-yellow-300 mb-3 text-md">4. Optimiser R&D et innovation</h5>
+                                            <p class="text-sm text-gray-300 mb-3">
+                                                La veille technologique évite de <strong>"réinventer la roue"</strong> et permet de capitaliser
+                                                sur les innovations existantes. Elle guide les investissements R&D vers les pistes les plus prometteuses.
+                                            </p>
+                                            <div class="bg-slate-900/50 p-4 rounded">
+                                                <p class="text-xs font-semibold text-yellow-300 mb-2">💡 ROI concret de la veille techno</p>
+                                                <div class="text-xs text-gray-300 space-y-2">
+                                                    <p>
+                                                        <strong>Cas réel - Entreprise pharmaceutique :</strong>
+                                                        Veille brevets identifie qu'un concurrent abandonne une molécule prometteuse.
+                                                    </p>
+                                                    <ul class="pl-4 space-y-1 mt-2">
+                                                        <li>• <strong>Action :</strong> Acquiert les droits pour 5M€</li>
+                                                        <li>• <strong>Économie :</strong> Évite 200M€ de R&D (molécule déjà développée)</li>
+                                                        <li>• <strong>Gain de temps :</strong> 5 ans gagnés sur le time-to-market</li>
+                                                        <li>• <strong>ROI veille :</strong> 1€ investi = 40 000€ économisés</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Enjeu 5 -->
+                                <div class="highlight-box p-6 rounded-xl">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="text-3xl">⚔️</div>
+                                        <div class="flex-1">
+                                            <h5 class="font-semibold text-red-300 mb-3 text-md">5. Améliorer le positionnement concurrentiel</h5>
+                                            <p class="text-sm text-gray-300 mb-3">
+                                                Connaître ses concurrents mieux qu'ils ne se connaissent eux-mêmes. La veille concurrentielle
+                                                permet d'anticiper leurs mouvements et d'adapter sa stratégie en conséquence.
+                                            </p>
+                                            <div class="grid md:grid-cols-3 gap-3 text-xs">
+                                                <div class="bg-slate-900/50 p-3 rounded">
+                                                    <p class="font-semibold text-red-300 mb-2">Surveiller</p>
+                                                    <ul class="text-gray-300 space-y-1">
+                                                        <li>• Lancements produits</li>
+                                                        <li>• Prix et promotions</li>
+                                                        <li>• Recrutements clés</li>
+                                                        <li>• Brevets déposés</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="bg-slate-900/50 p-3 rounded">
+                                                    <p class="font-semibold text-orange-300 mb-2">Analyser</p>
+                                                    <ul class="text-gray-300 space-y-1">
+                                                        <li>• Stratégies marketing</li>
+                                                        <li>• Résultats financiers</li>
+                                                        <li>• Forces/faiblesses</li>
+                                                        <li>• Positionnement</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="bg-slate-900/50 p-3 rounded">
+                                                    <p class="font-semibold text-green-300 mb-2">Anticiper</p>
+                                                    <ul class="text-gray-300 space-y-1">
+                                                        <li>• Prochains coups</li>
+                                                        <li>• Fusions/acquisitions</li>
+                                                        <li>• Pivots stratégiques</li>
+                                                        <li>• Nouveaux marchés</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-2 border-blue-500/30 rounded-xl p-5">
+                            <h4 class="text-md font-semibold text-blue-300 mb-3">📊 ROI de la veille : Les chiffres</h4>
+                            <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-300">
+                                <div>
+                                    <p class="font-semibold text-blue-300 mb-2">Coût moyen</p>
+                                    <ul class="text-xs space-y-1">
+                                        <li>• PME : 10-30K€/an (outils + 0,5 ETP)</li>
+                                        <li>• ETI : 50-150K€/an (outils + 2-3 ETP)</li>
+                                        <li>• Grande entreprise : 200-500K€/an (plateforme + équipe dédiée)</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-green-300 mb-2">Gains mesurables</p>
+                                    <ul class="text-xs space-y-1">
+                                        <li>• Réduction 30% du time-to-market</li>
+                                        <li>• Économies 20% sur les coûts R&D</li>
+                                        <li>• Augmentation 15% du taux de succès nouveaux produits</li>
+                                        <li>• <strong>ROI moyen : 1€ investi = 5-15€ de valeur créée</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="mb-6" open>
+                    <summary class="text-lg font-semibold text-blue-300">🔄 Le cycle du renseignement appliqué à la veille</summary>
+                    <div class="p-6 space-y-6">
+                        <div>
+                            <p class="text-gray-300 leading-relaxed mb-4">
+                                La veille ne se fait pas au hasard. Elle suit une <strong class="text-blue-400">méthodologie éprouvée</strong>
+                                issue du renseignement militaire : le <em>cycle du renseignement</em>. Ce processus en 5 étapes garantit
+                                l'efficacité et la pertinence de la veille.
+                            </p>
+                            <div class="bg-gradient-to-r from-blue-900/20 to-cyan-900/20 border border-blue-500/30 rounded-xl p-4">
+                                <p class="text-sm text-gray-300">
+                                    <strong class="text-blue-300">💡 Principe clé :</strong> Le cycle est <strong>itératif</strong>.
+                                    Ce n'est pas un processus linéaire "one-shot", mais une boucle continue qui s'améliore à chaque itération.
+                                    L'évaluation (étape 5) nourrit la redéfinition des besoins (étape 1).
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Étape 1 : Définir les besoins -->
+                            <div class="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-l-4 border-blue-500 p-6 rounded-xl">
+                                <div class="flex items-start space-x-4 mb-4">
+                                    <div class="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-xl shadow-lg">1</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-blue-300 mb-3 text-lg">Définir les besoins (Orientation)</h4>
+                                        <p class="text-gray-300 text-sm mb-4">
+                                            <strong>La phase la plus critique.</strong> Si les besoins sont mal définis, toute la veille sera inutile.
+                                            Il s'agit d'identifier <em>quelles informations</em> rechercher et <em>pourquoi</em>.
+                                        </p>
+
+                                        <div class="grid md:grid-cols-2 gap-3">
+                                            <div class="bg-slate-900/50 p-3 rounded">
+                                                <p class="text-xs font-semibold text-blue-300 mb-2">🎯 Méthode QQOQCP</p>
+                                                <ul class="text-xs text-gray-300 space-y-1">
+                                                    <li><strong>Qui</strong> surveiller ? (concurrents, clients, régulateurs...)</li>
+                                                    <li><strong>Quoi</strong> surveiller ? (produits, technologies, prix...)</li>
+                                                    <li><strong>Où</strong> ? (marchés géographiques, canaux...)</li>
+                                                    <li><strong>Quand</strong> ? (fréquence, horizon temporel)</li>
+                                                    <li><strong>Comment</strong> ? (sources, outils)</li>
+                                                    <li><strong>Pourquoi</strong> ? (objectif décisionnel)</li>
+                                                </ul>
+                                            </div>
+                                            <div class="bg-slate-900/50 p-3 rounded">
+                                                <p class="text-xs font-semibold text-purple-300 mb-2">✓ Checklist validation</p>
+                                                <ul class="text-xs text-gray-300 space-y-1">
+                                                    <li>☑ Besoins alignés avec stratégie</li>
+                                                    <li>☑ Questions précises et mesurables</li>
+                                                    <li>☑ Périmètre réaliste (pas trop large)</li>
+                                                    <li>☑ Décideurs identifiés</li>
+                                                    <li>☑ Ressources allouées (temps, budget)</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Étape 2 : Collecter -->
+                            <div class="bg-gradient-to-r from-purple-900/20 to-pink-900/20 border-l-4 border-purple-500 p-6 rounded-xl">
+                                <div class="flex items-start space-x-4 mb-4">
+                                    <div class="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center font-bold text-xl shadow-lg">2</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-purple-300 mb-3 text-lg">Collecter (Recherche)</h4>
+                                        <p class="text-gray-300 text-sm mb-4">
+                                            Rassembler l'information pertinente via des sources variées. <strong>Principe 80/20 :</strong>
+                                            80% de l'information utile provient de 20% des sources.
+                                        </p>
+
+                                        <div class="bg-slate-900/50 p-4 rounded mb-3">
+                                            <p class="text-xs font-semibold text-purple-300 mb-2">📚 Typologie des sources</p>
+                                            <div class="grid md:grid-cols-3 gap-3 text-xs text-gray-300">
+                                                <div>
+                                                    <p class="font-semibold text-blue-300 mb-1">Sources ouvertes (95%)</p>
+                                                    <ul class="space-y-1 pl-2">
+                                                        <li>• Presse, blogs, réseaux sociaux</li>
+                                                        <li>• Sites web, rapports publics</li>
+                                                        <li>• Brevets, publications scientifiques</li>
+                                                        <li>• Données open data</li>
+                                                    </ul>
+                                                </div>
+                                                <div>
+                                                    <p class="font-semibold text-green-300 mb-1">Sources grises</p>
+                                                    <ul class="space-y-1 pl-2">
+                                                        <li>• Salons professionnels</li>
+                                                        <li>• Conférences</li>
+                                                        <li>• Réseaux alumni</li>
+                                                        <li>• Clients/fournisseurs</li>
+                                                    </ul>
+                                                </div>
+                                                <div>
+                                                    <p class="font-semibold text-purple-300 mb-1">Sources humaines</p>
+                                                    <ul class="space-y-1 pl-2">
+                                                        <li>• Experts métier</li>
+                                                        <li>• Commercial terrain</li>
+                                                        <li>• Partenaires</li>
+                                                        <li>• Consultants</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid md:grid-cols-2 gap-3">
+                                            <div class="bg-green-900/20 border border-green-500/30 p-3 rounded">
+                                                <p class="text-xs font-semibold text-green-300 mb-1">🤖 Automatisable</p>
+                                                <p class="text-xs text-gray-300">Alertes Google, flux RSS, web scraping, outils de veille (Feedly, Talkwalker)</p>
+                                            </div>
+                                            <div class="bg-yellow-900/20 border border-yellow-500/30 p-3 rounded">
+                                                <p class="text-xs font-semibold text-yellow-300 mb-1">👤 Manuel nécessaire</p>
+                                                <p class="text-xs text-gray-300">Salons, entretiens experts, analyse qualitative, veille sur réseaux fermés</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Étape 3 : Analyser -->
+                            <div class="bg-gradient-to-r from-green-900/20 to-cyan-900/20 border-l-4 border-green-500 p-6 rounded-xl">
+                                <div class="flex items-start space-x-4 mb-4">
+                                    <div class="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-green-500 to-cyan-600 flex items-center justify-center font-bold text-xl shadow-lg">3</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-green-300 mb-3 text-lg">Analyser (Traitement)</h4>
+                                        <p class="text-gray-300 text-sm mb-4">
+                                            <strong>Phase à haute valeur ajoutée.</strong> Transformer l'information brute en <em>intelligence actionnable</em>.
+                                            C'est ici que le veilleur démontre son expertise.
+                                        </p>
+
+                                        <div class="bg-slate-900/50 p-4 rounded mb-3">
+                                            <p class="text-xs font-semibold text-green-300 mb-2">🔬 Les 4 niveaux d'analyse</p>
+                                            <div class="space-y-2 text-xs text-gray-300">
+                                                <div class="flex items-start space-x-2">
+                                                    <span class="font-bold text-blue-300">1.</span>
+                                                    <div>
+                                                        <strong>Tri :</strong> Éliminer le bruit (spam, duplicatas, hors sujet)
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-start space-x-2">
+                                                    <span class="font-bold text-purple-300">2.</span>
+                                                    <div>
+                                                        <strong>Qualification :</strong> Évaluer fiabilité source, vérifier cohérence, dater l'info
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-start space-x-2">
+                                                    <span class="font-bold text-green-300">3.</span>
+                                                    <div>
+                                                        <strong>Synthèse :</strong> Extraire l'essentiel, faire des liens, identifier patterns
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-start space-x-2">
+                                                    <span class="font-bold text-yellow-300">4.</span>
+                                                    <div>
+                                                        <strong>Interprétation :</strong> Donner du sens, implications stratégiques, recommandations
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-red-900/20 border border-red-500/30 p-3 rounded">
+                                            <p class="text-xs font-semibold text-red-300 mb-2">⚠️ Biais cognitifs à éviter</p>
+                                            <ul class="text-xs text-gray-300 space-y-1">
+                                                <li>• <strong>Biais de confirmation :</strong> Ne chercher que ce qui confirme ses croyances</li>
+                                                <li>• <strong>Effet de halo :</strong> Sur/sous-estimer info selon sa source</li>
+                                                <li>• <strong>Ancrage :</strong> Se focaliser sur première info reçue</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Étape 4 : Diffuser -->
+                            <div class="bg-gradient-to-r from-yellow-900/20 to-orange-900/20 border-l-4 border-yellow-500 p-6 rounded-xl">
+                                <div class="flex items-start space-x-4 mb-4">
+                                    <div class="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center font-bold text-xl shadow-lg">4</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-yellow-300 mb-3 text-lg">Diffuser (Communication)</h4>
+                                        <p class="text-gray-300 text-sm mb-4">
+                                            <strong>Bonne info + Mauvaise diffusion = Échec.</strong> L'information doit arriver
+                                            au bon destinataire, au bon moment, dans le bon format.
+                                        </p>
+
+                                        <div class="grid md:grid-cols-3 gap-3 text-xs mb-3">
+                                            <div class="bg-slate-900/50 p-3 rounded">
+                                                <p class="font-semibold text-yellow-300 mb-2">📱 Formats possibles</p>
+                                                <ul class="text-gray-300 space-y-1">
+                                                    <li>• Newsletter hebdo/mensuelle</li>
+                                                    <li>• Alerte urgente (email/SMS)</li>
+                                                    <li>• Dashboard temps réel</li>
+                                                    <li>• Rapport trimestriel</li>
+                                                    <li>• Présentation COMEX</li>
+                                                </ul>
+                                            </div>
+                                            <div class="bg-slate-900/50 p-3 rounded">
+                                                <p class="font-semibold text-orange-300 mb-2">🎯 Qui reçoit quoi ?</p>
+                                                <ul class="text-gray-300 space-y-1">
+                                                    <li><strong>Direction :</strong> Synthèse exécutive</li>
+                                                    <li><strong>Marketing :</strong> Veille concurrence</li>
+                                                    <li><strong>R&D :</strong> Veille techno</li>
+                                                    <li><strong>Juridique :</strong> Veille réglementaire</li>
+                                                </ul>
+                                            </div>
+                                            <div class="bg-slate-900/50 p-3 rounded">
+                                                <p class="font-semibold text-red-300 mb-2">⏰ Timing critique</p>
+                                                <ul class="text-gray-300 space-y-1">
+                                                    <li><strong>Urgent :</strong> Immédiat (crise)</li>
+                                                    <li><strong>Important :</strong> Sous 24-48h</li>
+                                                    <li><strong>Normal :</strong> Newsletter hebdo</li>
+                                                    <li><strong>Stratégique :</strong> Rapport mensuel/trimestriel</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <div class="example-card p-3 rounded">
+                                            <p class="text-xs font-semibold text-yellow-300 mb-1">💡 Règle d'or : "So What?"</p>
+                                            <p class="text-xs text-gray-300">
+                                                Chaque information diffusée doit répondre à : <strong>"Et alors ?"</strong>.
+                                                Ne pas se contenter de relayer des faits, mais expliciter <em>l'implication business</em>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Étape 5 : Évaluer -->
+                            <div class="bg-gradient-to-r from-pink-900/20 to-red-900/20 border-l-4 border-pink-500 p-6 rounded-xl">
+                                <div class="flex items-start space-x-4 mb-4">
+                                    <div class="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-red-600 flex items-center justify-center font-bold text-xl shadow-lg">5</div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-pink-300 mb-3 text-lg">Évaluer (Amélioration continue)</h4>
+                                        <p class="text-gray-300 text-sm mb-4">
+                                            <strong>Mesurer pour s'améliorer.</strong> Sans évaluation, impossible de savoir si la veille
+                                            est efficace ni comment l'optimiser. C'est l'étape trop souvent négligée.
+                                        </p>
+
+                                        <div class="bg-slate-900/50 p-4 rounded mb-3">
+                                            <p class="text-xs font-semibold text-pink-300 mb-2">📊 KPIs de la veille</p>
+                                            <div class="grid md:grid-cols-2 gap-3 text-xs text-gray-300">
+                                                <div>
+                                                    <p class="font-semibold text-blue-300 mb-1">Quantitatifs</p>
+                                                    <ul class="space-y-1">
+                                                        <li>• Nb d'informations collectées</li>
+                                                        <li>• Taux de précision (signal/bruit)</li>
+                                                        <li>• Délai de détection (vs concurrence)</li>
+                                                        <li>• Taux d'ouverture des newsletters</li>
+                                                        <li>• ROI veille (valeur créée/coût)</li>
+                                                    </ul>
+                                                </div>
+                                                <div>
+                                                    <p class="font-semibold text-purple-300 mb-1">Qualitatifs</p>
+                                                    <ul class="space-y-1">
+                                                        <li>• Satisfaction des utilisateurs</li>
+                                                        <li>• Décisions influencées par la veille</li>
+                                                        <li>• Opportunités identifiées/saisies</li>
+                                                        <li>• Crises évitées ou anticipées</li>
+                                                        <li>• Culture veille dans l'organisation</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid md:grid-cols-2 gap-3">
+                                            <div class="bg-blue-900/20 border border-green-300/90 p-3 rounded">
+                                                <p class="text-xs font-semibold text-green-300 mb-1">✓ Boucle d'amélioration</p>
+                                                <p class="text-xs text-gray-300">
+                                                    Retours utilisateurs → Ajustement besoins → Optimisation sources → Amélioration analyses
+                                                    → Affinement diffusion → Nouveau cycle
+                                                </p>
+                                            </div>
+                                            <div class="bg-blue-900/20 border border-blue-500/30 p-3 rounded">
+                                                <p class="text-xs font-semibold text-blue-300 mb-1">🎯 Objectif final</p>
+                                                <p class="text-xs text-gray-300">
+                                                    Faire de la veille un <strong>avantage concurrentiel durable</strong>, pas juste une activité de routine.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="example-card p-6 rounded-xl mt-6">
+                            <p class="text-sm text-gray-400 mb-2 font-semibold">💡 À retenir</p>
+                            <p class="text-gray-300">
+                                Ce cycle est <strong class="text-blue-400">itératif</strong> : les enseignements de l'évaluation
+                                nourrissent la redéfinition des besoins. Une veille efficace est une veille qui s'améliore continuellement.
+                            </p>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- QCM 1 -->
+        <section id="qcm1" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="text-3xl mr-4">📝</span>
+                <span class="gradient-text">QCM 1 : Introduction à la veille</span>
+            </h2>
+
+            <div class="quiz-progress" id="quiz1Progress"></div>
+
+            <div id="quiz1Container"></div>
+
+            <div class="mt-6 flex items-center justify-between">
+                <button id="quiz1SubmitBtn" onclick="submitQuiz1Answer()" class="nav-btn text-white px-8 py-3 rounded-lg font-semibold" disabled>
+                    Valider la réponse
+                </button>
+                <button id="quiz1NextBtn" onclick="nextQuiz1Question()" class="nav-btn text-white px-8 py-3 rounded-lg font-semibold hidden">
+                    Question suivante →
+                </button>
+                <div id="quiz1Score" class="text-lg font-semibold"></div>
+            </div>
+
+            <div id="quiz1Feedback" class="mt-6"></div>
+        </section>
+
+        <!-- Chapitre 2 : Les différents types de veille -->
+        <section id="types-veille" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">03</span>
+                <span class="gradient-text">Les différents types de veille</span>
+            </h2>
+            
+            <p class="text-gray-300 leading-relaxed mb-8">
+                Il existe plusieurs types de veille, chacun ayant un périmètre et des objectifs spécifiques. 
+                Une organisation mature combine généralement plusieurs types de veille pour obtenir une vision globale de son environnement.
+            </p>
+
+            <div class="space-y-8">
+                <!-- Veille concurrentielle -->
+                <div class="highlight-box p-6 rounded-xl">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="text-4xl">🎯</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-blue-300 mb-2">Veille concurrentielle</h3>
+                            <p class="text-gray-400 text-sm italic mb-4">Surveiller les acteurs du marché pour anticiper leurs mouvements</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-blue-200 mb-2">Objectifs :</h4>
+                            <ul class="custom-list text-gray-300 text-sm">
+                                <li>Surveiller les concurrents directs et indirects</li>
+                                <li>Analyser leurs stratégies (produits, prix, communication, distribution)</li>
+                                <li>Anticiper leurs mouvements (lancements, acquisitions, partenariats)</li>
+                                <li>Identifier les nouveaux entrants et menaces potentielles</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-blue-200 mb-2">Sources typiques :</h4>
+                            <p class="text-gray-300 text-sm">
+                                Sites web des concurrents, réseaux sociaux, communiqués de presse, rapports annuels, 
+                                salons professionnels, offres d'emploi, avis clients, études de marché.
+                            </p>
+                        </div>
+
+                        <div class="example-card p-4 rounded-lg">
+                            <p class="text-sm text-gray-400 mb-2 font-semibold">📌 Exemple concret</p>
+                            <p class="text-gray-300 text-sm">
+                                <strong class="text-blue-300">Netflix</strong> surveille en permanence Disney+, Amazon Prime Video, 
+                                et les nouveaux entrants. En analysant leurs catalogues, prix et stratégies de contenu, 
+                                Netflix ajuste ses investissements dans les productions originales et ses tarifs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Veille technologique -->
+                <div class="highlight-box p-6 rounded-xl">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="text-4xl">🔬</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-purple-300 mb-2">Veille technologique</h3>
+                            <p class="text-gray-400 text-sm italic mb-4">Suivre les innovations et ruptures technologiques</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-purple-200 mb-2">Objectifs :</h4>
+                            <ul class="custom-list text-gray-300 text-sm">
+                                <li>Identifier les technologies émergentes et leur potentiel</li>
+                                <li>Anticiper les ruptures technologiques (disruptions)</li>
+                                <li>Évaluer la maturité des technologies (TRL - Technology Readiness Level)</li>
+                                <li>Repérer les opportunités d'innovation et de R&D</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-purple-200 mb-2">Sources typiques :</h4>
+                            <p class="text-gray-300 text-sm">
+                                Publications scientifiques (arXiv, IEEE), brevets (Google Patents, INPI), 
+                                conférences tech, GitHub, blogs d'experts, rapports de cabinets (Gartner, Forrester).
+                            </p>
+                        </div>
+
+                        <div class="example-card p-4 rounded-lg">
+                            <p class="text-sm text-gray-400 mb-2 font-semibold">📌 Exemple concret</p>
+                            <p class="text-gray-300 text-sm">
+                                Les constructeurs automobiles comme <strong class="text-purple-300">Tesla</strong> ou 
+                                <strong class="text-purple-300">Toyota</strong> surveillent les avancées en batteries 
+                                (solid-state, lithium-soufre), en conduite autonome et en IA pour anticiper les prochaines 
+                                générations de véhicules électriques.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Veille commerciale -->
+                <div class="highlight-box p-6 rounded-xl">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="text-4xl">💰</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-green-300 mb-2">Veille commerciale</h3>
+                            <p class="text-gray-400 text-sm italic mb-4">Détecter les opportunités de marché et suivre les clients</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-green-200 mb-2">Objectifs :</h4>
+                            <ul class="custom-list text-gray-300 text-sm">
+                                <li>Identifier les opportunités de business (appels d'offres, projets)</li>
+                                <li>Suivre l'évolution des besoins clients et des tendances de consommation</li>
+                                <li>Analyser les pratiques d'achat et les critères de décision</li>
+                                <li>Repérer les nouveaux segments de marché</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-green-200 mb-2">Sources typiques :</h4>
+                            <p class="text-gray-300 text-sm">
+                                Plateformes d'appels d'offres, CRM, études de marché, baromètres sectoriels, 
+                                réseaux sociaux (écoute sociale), forums clients, avis en ligne, data analytics.
+                            </p>
+                        </div>
+
+                        <div class="example-card p-4 rounded-lg">
+                            <p class="text-sm text-gray-400 mb-2 font-semibold">📌 Exemple concret</p>
+                            <p class="text-gray-300 text-sm">
+                                <strong class="text-green-300">Amazon</strong> analyse en continu les comportements d'achat, 
+                                les recherches et les avis clients pour ajuster son catalogue, ses recommandations et même 
+                                développer ses propres marques (Amazon Basics) sur les segments porteurs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Veille réglementaire -->
+                <div class="highlight-box p-6 rounded-xl">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="text-4xl">⚖️</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-yellow-300 mb-2">Veille réglementaire</h3>
+                            <p class="text-gray-400 text-sm italic mb-4">Anticiper les évolutions législatives et normatives</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-yellow-200 mb-2">Objectifs :</h4>
+                            <ul class="custom-list text-gray-300 text-sm">
+                                <li>Suivre les évolutions législatives et réglementaires</li>
+                                <li>Anticiper les contraintes légales à venir</li>
+                                <li>Assurer la conformité (compliance)</li>
+                                <li>Identifier les opportunités liées aux nouvelles régulations</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-yellow-200 mb-2">Sources typiques :</h4>
+                            <p class="text-gray-300 text-sm">
+                                Journal Officiel, sites gouvernementaux, bulletins législatifs, cabinets juridiques, 
+                                associations professionnelles, lobbyistes, consultations publiques.
+                            </p>
+                        </div>
+
+                        <div class="example-card p-4 rounded-lg">
+                            <p class="text-sm text-gray-400 mb-2 font-semibold">📌 Exemple concret</p>
+                            <p class="text-gray-300 text-sm">
+                                Le <strong class="text-yellow-300">RGPD</strong> (2018) a obligé toutes les entreprises 
+                                traitant des données personnelles à se mettre en conformité. Celles qui avaient anticipé 
+                                cette réglementation via une veille active ont pu adapter leurs processus progressivement, 
+                                tandis que d'autres ont dû investir massivement dans l'urgence.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Veille d'image / e-réputation -->
+                <div class="highlight-box p-6 rounded-xl">
+                    <div class="flex items-start space-x-4 mb-4">
+                        <div class="text-4xl">👁️</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-red-300 mb-2">Veille d'image / e-réputation</h3>
+                            <p class="text-gray-400 text-sm italic mb-4">Surveiller et gérer la perception de la marque</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-red-200 mb-2">Objectifs :</h4>
+                            <ul class="custom-list text-gray-300 text-sm">
+                                <li>Surveiller ce qui se dit sur la marque, les produits, les dirigeants</li>
+                                <li>Détecter rapidement les crises potentielles (bad buzz)</li>
+                                <li>Analyser le sentiment (positif, négatif, neutre)</li>
+                                <li>Mesurer l'impact des campagnes de communication</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-red-200 mb-2">Sources typiques :</h4>
+                            <p class="text-gray-300 text-sm">
+                                Réseaux sociaux (X/Twitter, Facebook, Instagram, TikTok, LinkedIn), 
+                                forums, blogs, sites d'avis (Trustpilot, Google Reviews), médias en ligne, 
+                                plateformes de social listening (Brandwatch, Mention).
+                            </p>
+                        </div>
+
+                        <div class="example-card p-4 rounded-lg">
+                            <p class="text-sm text-gray-400 mb-2 font-semibold">📌 Exemple concret</p>
+                            <p class="text-gray-300 text-sm">
+                                En 2017, la vidéo d'un passager expulsé violemment d'un vol <strong class="text-red-300">United Airlines</strong> 
+                                devient virale. Une veille e-réputation efficace aurait permis de détecter la crise naissante 
+                                et de réagir plus rapidement pour limiter les dégâts (perte de 1,4 milliard $ de valorisation boursière).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example-card p-6 rounded-xl mt-8">
+                <p class="text-sm text-gray-400 mb-2 font-semibold">💡 Complémentarité des veilles</p>
+                <p class="text-gray-300">
+                    Ces différents types de veille ne sont pas exclusifs : une entreprise performante les combine 
+                    pour obtenir une <strong class="text-blue-400">vision 360°</strong> de son environnement. 
+                    Par exemple, surveiller un concurrent (veille concurrentielle) implique souvent de suivre 
+                    ses innovations (veille technologique) et sa réputation (veille d'image).
+                </p>
+            </div>
+        </section>
+
+        <!-- Chapitre 3 : Focus sur la veille stratégique -->
+        <section id="veille-strategique" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">04</span>
+                <span class="gradient-text">Focus : La Veille Stratégique</span>
+            </h2>
+            
+            <div class="space-y-8">
+                <!-- Définition et positionnement -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 subsection-title">Définition et positionnement</h3>
+                    <p class="text-gray-300 leading-relaxed mb-4">
+                        La <strong class="text-blue-400">veille stratégique</strong> n'est pas un type de veille supplémentaire, 
+                        mais plutôt une <em class="text-purple-400">synthèse et une orchestration</em> de toutes les veilles 
+                        thématiques au service de la stratégie globale de l'organisation.
+                    </p>
+                    
+                    <div class="highlight-box p-6 rounded-xl">
+                        <h4 class="font-semibold text-blue-300 mb-3">Caractéristiques clés</h4>
+                        <ul class="custom-list text-gray-300">
+                            <li>
+                                <strong class="text-blue-200">Vision globale</strong> : intègre l'ensemble des informations 
+                                issues des différentes veilles thématiques
+                            </li>
+                            <li>
+                                <strong class="text-blue-200">Orientation décisionnelle</strong> : vise à éclairer les choix 
+                                stratégiques de la direction générale
+                            </li>
+                            <li>
+                                <strong class="text-blue-200">Perspective long terme</strong> : se projette sur 3 à 5 ans 
+                                pour anticiper les grandes transformations
+                            </li>
+                            <li>
+                                <strong class="text-blue-200">Focus sur les ruptures</strong> : priorité aux signaux faibles 
+                                et aux changements majeurs de l'environnement
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="example-card p-6 rounded-xl mt-6">
+                        <p class="text-sm text-gray-400 mb-2 font-semibold">🔄 La veille stratégique comme hub central</p>
+                        <p class="text-gray-300">
+                            Imaginez la veille stratégique comme le <strong class="text-blue-400">tableau de bord d'un pilote d'avion</strong> : 
+                            elle agrège les données de multiples instruments (veilles thématiques) pour donner une vision 
+                            synthétique permettant de prendre les bonnes décisions de navigation.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Objectifs de la veille stratégique -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 subsection-title">Objectifs de la veille stratégique</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="highlight-box p-6 rounded-xl">
+                            <h4 class="font-semibold text-blue-300 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">🔮</span>
+                                Anticiper les ruptures et disruptions
+                            </h4>
+                            <p class="text-gray-300 text-sm mb-3">
+                                Identifier les changements majeurs avant qu'ils ne se produisent : nouvelles technologies, 
+                                nouveaux business models, évolutions sociétales, crises potentielles.
+                            </p>
+                            <div class="bg-slate-900/50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-400 mb-1">Exemple :</p>
+                                <p class="text-gray-300 text-sm">
+                                    Kodak n'a pas anticipé la disruption du numérique malgré l'invention de l'appareil photo numérique... 
+                                    par ses propres ingénieurs en 1975.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="highlight-box p-6 rounded-xl">
+                            <h4 class="font-semibold text-purple-300 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">🎯</span>
+                                Identifier opportunités et menaces
+                            </h4>
+                            <p class="text-gray-300 text-sm mb-3">
+                                Repérer les espaces de croissance (nouveaux marchés, segments inexploités) et 
+                                les risques pesant sur l'activité (nouveaux entrants, substituts, régulations).
+                            </p>
+                            <div class="bg-slate-900/50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-400 mb-1">Exemple :</p>
+                                <p class="text-gray-300 text-sm">
+                                    Apple a identifié l'opportunité du smartphone avant Nokia et Blackberry, 
+                                    qui dominaient alors le marché de la téléphonie mobile.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="highlight-box p-6 rounded-xl">
+                            <h4 class="font-semibold text-green-300 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">🧭</span>
+                                Éclairer les décisions stratégiques
+                            </h4>
+                            <p class="text-gray-300 text-sm mb-3">
+                                Fournir aux décideurs l'information pertinente et contextualisée pour valider 
+                                ou invalider leurs hypothèses stratégiques (lancement produit, acquisition, pivot).
+                            </p>
+                            <div class="bg-slate-900/50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-400 mb-1">Exemple :</p>
+                                <p class="text-gray-300 text-sm">
+                                    La décision de Microsoft d'investir massivement dans l'IA (partenariat OpenAI) 
+                                    repose sur une veille stratégique ayant identifié le potentiel disruptif des LLM.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="highlight-box p-6 rounded-xl">
+                            <h4 class="font-semibold text-red-300 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">📉</span>
+                                Réduire l'incertitude
+                            </h4>
+                            <p class="text-gray-300 text-sm mb-3">
+                                Diminuer le risque associé aux décisions en s'appuyant sur des données factuelles 
+                                et des analyses prospectives plutôt que sur l'intuition seule.
+                            </p>
+                            <div class="bg-slate-900/50 p-3 rounded-lg">
+                                <p class="text-xs text-gray-400 mb-1">Exemple :</p>
+                                <p class="text-gray-300 text-sm">
+                                    Les entreprises pharmaceutiques utilisent la veille stratégique pour sécuriser 
+                                    leurs investissements R&D (plusieurs centaines de millions par molécule).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Méthodologie de base -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 subsection-title">Méthodologie de base</h3>
+                    
+                    <div class="space-y-6">
+                        <div class="highlight-box p-6 rounded-xl">
+                            <h4 class="font-semibold text-blue-300 mb-3">1. Identifier les axes stratégiques à surveiller</h4>
+                            <p class="text-gray-300 text-sm mb-4">
+                                Définir les thématiques prioritaires en fonction des enjeux business de l'organisation. 
+                                Ces axes découlent directement de la stratégie d'entreprise.
+                            </p>
+                            <div class="bg-slate-900/50 p-4 rounded-lg">
+                                <p class="text-xs text-gray-400 mb-2">Exemples d'axes stratégiques :</p>
+                                <div class="grid md:grid-cols-2 gap-3">
+                                    <div>
+                                        <p class="text-sm text-blue-300 font-semibold mb-1">Pour un e-commerçant :</p>
+                                        <ul class="text-xs text-gray-300 space-y-1 pl-4">
+                                            <li>• Évolution des comportements d'achat en ligne</li>
+                                            <li>• Technologies logistiques (livraison drone, etc.)</li>
+                                            <li>• Régulation du commerce en ligne</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-purple-300 font-semibold mb-1">Pour un constructeur auto :</p>
+                                        <ul class="text-xs text-gray-300 space-y-1 pl-4">
+                                            <li>• Transition énergétique et batteries</li>
+                                            <li>• Conduite autonome et IA</li>
+                                            <li>• Nouvelles mobilités (autopartage, etc.)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="highlight-box p-6 rounded-xl">
+                            <h4 class="font-semibold text-blue-300 mb-3">2. Définir les indicateurs clés</h4>
+                            <p class="text-gray-300 text-sm mb-4">
+                                Pour chaque axe, identifier les <strong>KPI</strong> (Key Performance Indicators) 
+                                et <strong>KVI</strong> (Key Vigilance Indicators) à suivre pour mesurer l'évolution de l'environnement.
+                            </p>
+                            <div class="bg-slate-900/50 p-4 rounded-lg">
+                                <p class="text-xs text-gray-400 mb-2">Exemples d'indicateurs :</p>
+                                <ul class="text-sm text-gray-300 space-y-2">
+                                    <li class="flex items-start">
+                                        <span class="text-blue-400 mr-2">▹</span>
+                                        <span><strong>Part de marché</strong> des principaux concurrents</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-blue-400 mr-2">▹</span>
+                                        <span><strong>Nombre de brevets</strong> déposés dans un domaine technologique</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-blue-400 mr-2">▹</span>
+                                        <span><strong>Volume de mentions</strong> d'une technologie dans la presse spécialisée</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-blue-400 mr-2">▹</span>
+                                        <span><strong>Évolution réglementaire</strong> (nombre de projets de loi, consultations)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="highlight-box p-6 rounded-xl">
+                            <h4 class="font-semibold text-blue-300 mb-3">3. Hiérarchiser l'information (signal vs bruit)</h4>
+                            <p class="text-gray-300 text-sm mb-4">
+                                Tout n'a pas la même importance. Il faut distinguer les informations stratégiques 
+                                (signal) du bruit informationnel ambiant.
+                            </p>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-green-900/20 border-l-4 border-green-500 p-4 rounded-lg">
+                                    <p class="text-green-300 font-semibold mb-2 flex items-center">
+                                        <span class="mr-2">✓</span> Signal (à retenir)
+                                    </p>
+                                    <ul class="text-sm text-gray-300 space-y-1">
+                                        <li>• Information nouvelle et pertinente</li>
+                                        <li>• Impact potentiel élevé</li>
+                                        <li>• Source fiable et vérifiable</li>
+                                        <li>• En lien avec les axes stratégiques</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-red-900/20 border-l-4 border-red-500 p-4 rounded-lg">
+                                    <p class="text-red-300 font-semibold mb-2 flex items-center">
+                                        <span class="mr-2">✗</span> Bruit (à filtrer)
+                                    </p>
+                                    <ul class="text-sm text-gray-300 space-y-1">
+                                        <li>• Information déjà connue</li>
+                                        <li>• Impact faible ou nul</li>
+                                        <li>• Source douteuse ou non vérifiée</li>
+                                        <li>• Hors périmètre stratégique</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="highlight-box p-6 rounded-xl">
+                            <h4 class="font-semibold text-blue-300 mb-3">4. Transformer l'information en intelligence</h4>
+                            <p class="text-gray-300 text-sm mb-4">
+                                L'information brute n'a pas de valeur en soi. Elle doit être <strong>analysée, contextualisée 
+                                et interprétée</strong> pour devenir actionnable.
+                            </p>
+                            <div class="bg-slate-900/50 p-4 rounded-lg space-y-3">
+                                <div>
+                                    <p class="text-blue-300 font-semibold text-sm mb-1">Données → Information</p>
+                                    <p class="text-gray-300 text-xs">
+                                        "Tesla a vendu 500 000 véhicules en 2023" (fait brut)
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-purple-300 font-semibold text-sm mb-1">Information → Intelligence</p>
+                                    <p class="text-gray-300 text-xs">
+                                        "Tesla gagne 3 points de parts de marché, signalant une accélération de l'électrification. 
+                                        Pour rester compétitif, nous devons avancer notre roadmap véhicules électriques de 12 mois 
+                                        et investir 200M€ supplémentaires en R&D batteries."
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Les signaux faibles -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 subsection-title">Les signaux faibles</h3>
+                    
+                    <div class="highlight-box p-6 rounded-xl mb-6">
+                        <h4 class="font-semibold text-blue-300 mb-3">Qu'est-ce qu'un signal faible ?</h4>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Un <strong class="text-blue-400">signal faible</strong> est une information apparemment anodine, 
+                            difficile à percevoir dans le flux informationnel, mais qui peut annoncer un changement majeur 
+                            de l'environnement. C'est le <em class="text-purple-400">"petit indice qui change tout"</em>.
+                        </p>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-slate-900/50 p-4 rounded-lg">
+                                <p class="text-blue-300 font-semibold text-sm mb-2">Caractéristiques</p>
+                                <ul class="text-xs text-gray-300 space-y-1">
+                                    <li>• Faible volume d'information</li>
+                                    <li>• Peu d'attention médiatique</li>
+                                    <li>• Souvent contradictoire avec les tendances dominantes</li>
+                                    <li>• Difficile à interpréter</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900/50 p-4 rounded-lg">
+                                <p class="text-purple-300 font-semibold text-sm mb-2">Sources typiques</p>
+                                <ul class="text-xs text-gray-300 space-y-1">
+                                    <li>• Publications de recherche nichées</li>
+                                    <li>• Startups émergentes</li>
+                                    <li>• Brevets inattendus</li>
+                                    <li>• Comportements marginaux</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900/50 p-4 rounded-lg">
+                                <p class="text-green-300 font-semibold text-sm mb-2">Valeur stratégique</p>
+                                <ul class="text-xs text-gray-300 space-y-1">
+                                    <li>• Anticipation de ruptures</li>
+                                    <li>• Avantage concurrentiel</li>
+                                    <li>• Innovation proactive</li>
+                                    <li>• Réduction du risque</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-purple-300 mb-4">Pourquoi sont-ils stratégiques ?</h4>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Les signaux faibles permettent de gagner du <strong class="text-blue-400">temps d'avance</strong> 
+                            sur la concurrence. Entre le moment où un signal faible émerge et le moment où il devient une 
+                            tendance évidente, il peut se passer plusieurs années. C'est cette fenêtre temporelle qui offre 
+                            un avantage décisif.
+                        </p>
+                        
+                        <div class="example-card p-6 rounded-xl">
+                            <p class="text-sm text-gray-400 mb-3 font-semibold">📊 La courbe de diffusion de l'innovation</p>
+                            <div class="space-y-2 text-sm text-gray-300">
+                                <p><strong class="text-blue-300">Phase 1 - Signal faible (0-2%)</strong> : seuls les innovateurs early adopters détectent l'innovation</p>
+                                <p><strong class="text-purple-300">Phase 2 - Émergence (2-15%)</strong> : les early adopters adoptent, le signal devient visible</p>
+                                <p><strong class="text-yellow-300">Phase 3 - Croissance (15-85%)</strong> : la majorité adopte, c'est une tendance évidente</p>
+                                <p><strong class="text-red-300">Phase 4 - Maturité (85-100%)</strong> : saturation du marché</p>
+                            </div>
+                            <p class="text-gray-400 text-xs mt-3 italic">
+                                💡 L'avantage stratégique se joue dans les phases 1 et 2, quand 98% du marché n'a pas encore identifié la tendance.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <h4 class="font-semibold text-purple-300 mb-4">Comment les détecter ?</h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="highlight-box p-5 rounded-xl">
+                                <h5 class="text-blue-300 font-semibold mb-3 text-sm">Méthodes qualitatives</h5>
+                                <ul class="custom-list text-gray-300 text-sm space-y-2">
+                                    <li>Cultiver la <strong>curiosité et l'ouverture</strong> : regarder au-delà de son secteur</li>
+                                    <li>Pratiquer la <strong>sérendipité organisée</strong> : exploration systématique de sources inhabituelles</li>
+                                    <li>Solliciter des <strong>regards extérieurs</strong> : experts, consultants, conseil scientifique</li>
+                                    <li>Organiser des <strong>workshops prospectifs</strong> réguliers</li>
+                                </ul>
+                            </div>
+                            <div class="highlight-box p-5 rounded-xl">
+                                <h5 class="text-purple-300 font-semibold mb-3 text-sm">Méthodes quantitatives</h5>
+                                <ul class="custom-list text-gray-300 text-sm space-y-2">
+                                    <li><strong>Analyse de brevets</strong> : identifier les dépôts émergents</li>
+                                    <li><strong>Text mining</strong> : détecter l'apparition de nouveaux termes</li>
+                                    <li><strong>Social listening</strong> : repérer les conversations naissantes</li>
+                                    <li><strong>Analyse de financement</strong> : suivre les investissements VC sur des niches</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <h4 class="font-semibold text-purple-300 mb-4">Exemples historiques de signaux faibles</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="example-card p-5 rounded-xl">
+                                <div class="flex items-start space-x-3">
+                                    <span class="text-2xl">✓</span>
+                                    <div class="flex-1">
+                                        <p class="text-green-300 font-semibold mb-2">Signal détecté et exploité</p>
+                                        <p class="text-sm text-gray-300 mb-2">
+                                            <strong class="text-blue-300">Netflix (2011-2012)</strong> : Les signaux faibles du streaming vidéo 
+                                            (baisse des coûts de bande passante, hausse du débit internet, succès de YouTube) ont permis à 
+                                            Netflix de pivoter du DVD par correspondance au streaming avant ses concurrents.
+                                        </p>
+                                        <p class="text-xs text-gray-400 italic">
+                                            Résultat : domination du marché du streaming pendant plusieurs années.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="example-card p-5 rounded-xl">
+                                <div class="flex items-start space-x-3">
+                                    <span class="text-2xl">✓</span>
+                                    <div class="flex-1">
+                                        <p class="text-green-300 font-semibold mb-2">Signal détecté et exploité</p>
+                                        <p class="text-sm text-gray-300 mb-2">
+                                            <strong class="text-blue-300">OpenAI (2017-2020)</strong> : Quelques chercheurs détectent le potentiel 
+                                            des Transformers (architecture neuronale publiée par Google en 2017) pour le traitement du langage. 
+                                            OpenAI investit massivement sur cette piste.
+                                        </p>
+                                        <p class="text-xs text-gray-400 italic">
+                                            Résultat : lancement de GPT-3 puis ChatGPT, révolution de l'IA générative.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="example-card p-5 rounded-xl border-2 border-red-500/30">
+                                <div class="flex items-start space-x-3">
+                                    <span class="text-2xl">✗</span>
+                                    <div class="flex-1">
+                                        <p class="text-red-300 font-semibold mb-2">Signal manqué</p>
+                                        <p class="text-sm text-gray-300 mb-2">
+                                            <strong class="text-red-300">Blockbuster vs Netflix (2000)</strong> : En 2000, Reed Hastings (Netflix) 
+                                            propose un partenariat à Blockbuster qui refuse, ne voyant pas le potentiel du DVD par correspondance 
+                                            (signal faible de l'évolution des habitudes de consommation).
+                                        </p>
+                                        <p class="text-xs text-gray-400 italic">
+                                            Résultat : Blockbuster fait faillite en 2010, Netflix vaut aujourd'hui >150 milliards $.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="example-card p-5 rounded-xl border-2 border-red-500/30">
+                                <div class="flex items-start space-x-3">
+                                    <span class="text-2xl">✗</span>
+                                    <div class="flex-1">
+                                        <p class="text-red-300 font-semibold mb-2">Signal manqué</p>
+                                        <p class="text-sm text-gray-300 mb-2">
+                                            <strong class="text-red-300">Nokia (2007)</strong> : Le PDG de Nokia se moque de l'iPhone lors de son 
+                                            lancement, le jugeant trop cher et peu adapté au marché. Il n'identifie pas le signal faible de la 
+                                            convergence téléphone-ordinateur-internet.
+                                        </p>
+                                        <p class="text-xs text-gray-400 italic">
+                                            Résultat : Nokia passe de leader mondial à quasi-disparition en 5 ans.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box p-6 rounded-xl mt-6">
+                        <p class="text-sm text-gray-400 mb-2 font-semibold">💡 Leçon clé</p>
+                        <p class="text-gray-300">
+                            La détection des signaux faibles n'est pas une science exacte. Elle nécessite une combinaison de 
+                            <strong class="text-blue-400">rigueur méthodologique</strong> (veille systématique), 
+                            <strong class="text-purple-400">intuition</strong> (expérience et culture générale), et 
+                            <strong class="text-green-400">courage managérial</strong> (oser investir sur des paris incertains).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QCM 2 -->
+        <section id="qcm2" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="text-3xl mr-4">📝</span>
+                <span class="gradient-text">QCM 2 : Types de veille et veille stratégique</span>
+            </h2>
+
+            <div class="quiz-progress" id="quiz2Progress"></div>
+
+            <div id="quiz2Container"></div>
+
+            <div class="mt-6 flex items-center justify-between">
+                <button id="quiz2SubmitBtn" onclick="submitQuiz2Answer()" class="nav-btn text-white px-8 py-3 rounded-lg font-semibold" disabled>
+                    Valider la réponse
+                </button>
+                <button id="quiz2NextBtn" onclick="nextQuiz2Question()" class="nav-btn text-white px-8 py-3 rounded-lg font-semibold hidden">
+                    Question suivante →
+                </button>
+                <div id="quiz2Score" class="text-lg font-semibold"></div>
+            </div>
+
+            <div id="quiz2Feedback" class="mt-6"></div>
+        </section>
+
+        <!-- Récapitulatif -->
+        <section id="recap" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="text-3xl mr-4">📋</span>
+                <span class="gradient-text">Récapitulatif de la séance</span>
+            </h2>
+            
+            <div class="space-y-6">
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-blue-300 mb-3">Ce que vous avez appris</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-300 mb-2">✓ Concepts fondamentaux</p>
+                            <ul class="text-sm text-gray-400 space-y-1 pl-4">
+                                <li>• Définition et enjeux de la veille</li>
+                                <li>• Le cycle du renseignement (5 étapes)</li>
+                                <li>• La notion de signal faible</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-300 mb-2">✓ Types de veille</p>
+                            <ul class="text-sm text-gray-400 space-y-1 pl-4">
+                                <li>• Veille concurrentielle</li>
+                                <li>• Veille technologique</li>
+                                <li>• Veille commerciale</li>
+                                <li>• Veille réglementaire</li>
+                                <li>• Veille d'image / e-réputation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-purple-300 mb-3">Focus : Veille stratégique</h3>
+                    <div class="space-y-3">
+                        <p class="text-sm text-gray-300">
+                            <strong class="text-blue-400">Vision globale</strong> intégrant toutes les veilles thématiques 
+                            pour éclairer la stratégie d'entreprise
+                        </p>
+                        <p class="text-sm text-gray-300">
+                            <strong class="text-purple-400">4 objectifs clés</strong> : anticiper les ruptures, 
+                            identifier opportunités/menaces, éclairer les décisions, réduire l'incertitude
+                        </p>
+                        <p class="text-sm text-gray-300">
+                            <strong class="text-green-400">Importance des signaux faibles</strong> pour gagner un temps 
+                            d'avance et obtenir un avantage concurrentiel durable
+                        </p>
+                    </div>
+                </div>
+
+                <div class="example-card p-6 rounded-xl">
+                    <h3 class="font-semibold text-yellow-300 mb-3">🎯 À retenir pour la pratique</h3>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">1.</span>
+                            <span>Une veille efficace commence toujours par la <strong>définition claire des besoins</strong></span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">2.</span>
+                            <span>Il faut <strong>combiner plusieurs types de veille</strong> pour avoir une vision 360° de l'environnement</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">3.</span>
+                            <span>La veille stratégique doit être <strong>orientée action et décision</strong>, pas juste accumulation d'information</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-400 mr-2">4.</span>
+                            <span>Les <strong>signaux faibles</strong> sont votre meilleur atout pour anticiper les disruptions</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <div class="flex items-center justify-between mt-12 mb-8">
+            <div class="text-gray-400">
+                <p class="text-sm">Jour 1 - Séance 1</p>
+                <p class="text-xs">La Veille Stratégique</p>
+            </div>
+            <div class="text-right">
+                <a href="j1_s2_intelligence_artificielle.html">
+                <p class="text-sm text-gray-400">Prochaine séance</p>
+                <p class="font-semibold text-blue-400">L'Intelligence Artificielle</p>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 px-4 border-t border-gray-800 mt-12">
+        <div class="max-w-6xl mx-auto text-center text-gray-400 text-sm">
+            <p>Veille Stratégique et Analyse des Tendances IA - 2025-2026</p>
+            <p class="mt-2"></p>
+        </div>
+    </footer>
+
+    <script>
+        // Progress bar scroll effect
+        window.addEventListener('scroll', () => {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrolled = window.scrollY;
+            const progress = (scrolled / documentHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        });
+
+        // Fisher-Yates shuffle algorithm
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Quiz 1 Data
+        const quiz1Questions = [
+            {
+                question: "Quelle est la première étape du cycle du renseignement appliqué à la veille ?",
+                options: [
+                    { text: "Définir les besoins", correct: true },
+                    { text: "Collecter l'information", correct: false },
+                    { text: "Analyser les données", correct: false },
+                    { text: "Diffuser les résultats", correct: false }
+                ],
+                explanation: "Le cycle commence toujours par la définition des besoins pour orienter efficacement la collecte d'information."
+            },
+            {
+                question: "Qu'est-ce que la veille permet principalement à une organisation ?",
+                options: [
+                    { text: "D'anticiper les évolutions et prendre des décisions éclairées", correct: true },
+                    { text: "De copier les stratégies concurrentes", correct: false },
+                    { text: "D'espionner les employés", correct: false },
+                    { text: "De réduire les coûts marketing", correct: false }
+                ],
+                explanation: "La veille est un processus stratégique visant à anticiper l'environnement et éclairer les décisions, pas simplement à imiter ou surveiller."
+            },
+            {
+                question: "Combien d'étapes compose le cycle du renseignement appliqué à la veille ?",
+                options: [
+                    { text: "5 étapes", correct: true },
+                    { text: "3 étapes", correct: false },
+                    { text: "7 étapes", correct: false },
+                    { text: "4 étapes", correct: false }
+                ],
+                explanation: "Le cycle comprend 5 étapes : Définir les besoins, Collecter, Analyser, Diffuser, Évaluer."
+            },
+            {
+                question: "Quel est l'objectif de l'étape 'Analyser' dans le cycle de veille ?",
+                options: [
+                    { text: "Trier, qualifier et interpréter l'information pour en extraire du sens", correct: true },
+                    { text: "Rassembler le maximum d'informations possibles", correct: false },
+                    { text: "Communiquer les résultats aux parties prenantes", correct: false },
+                    { text: "Mesurer l'efficacité du dispositif de veille", correct: false }
+                ],
+                explanation: "L'analyse consiste à donner du sens à l'information brute en la triant, qualifiant et interprétant."
+            },
+            {
+                question: "Dans les années où le concept moderne de veille stratégique a-t-il émergé ?",
+                options: [
+                    { text: "1960-1970", correct: true },
+                    { text: "1980-1990", correct: false },
+                    { text: "2000-2010", correct: false },
+                    { text: "1940-1950", correct: false }
+                ],
+                explanation: "Le concept moderne de veille stratégique émerge dans les années 1960-1970, inspiré des pratiques de renseignement militaire."
+            },
+            {
+                question: "Pourquoi l'étape 'Évaluer' est-elle importante dans le cycle de veille ?",
+                options: [
+                    { text: "Elle permet d'ajuster et améliorer continuellement le dispositif de veille", correct: true },
+                    { text: "Elle sert uniquement à justifier le budget de veille", correct: false },
+                    { text: "Elle est optionnelle et peu utile", correct: false },
+                    { text: "Elle remplace l'étape de collecte", correct: false }
+                ],
+                explanation: "Le cycle est itératif : l'évaluation permet d'améliorer le dispositif en identifiant ce qui fonctionne et ce qui doit être ajusté."
+            }
+        ];
+
+        // Quiz 2 Data
+        const quiz2Questions = [
+            {
+                question: "Quel type de veille surveille principalement les stratégies et mouvements des concurrents ?",
+                options: [
+                    { text: "Veille concurrentielle", correct: true },
+                    { text: "Veille technologique", correct: false },
+                    { text: "Veille commerciale", correct: false },
+                    { text: "Veille réglementaire", correct: false }
+                ],
+                explanation: "La veille concurrentielle se concentre sur l'analyse des concurrents directs et indirects, leurs stratégies et leurs mouvements."
+            },
+            {
+                question: "Quelle veille est essentielle pour anticiper les contraintes légales et assurer la conformité ?",
+                options: [
+                    { text: "Veille réglementaire", correct: true },
+                    { text: "Veille d'image", correct: false },
+                    { text: "Veille technologique", correct: false },
+                    { text: "Veille commerciale", correct: false }
+                ],
+                explanation: "La veille réglementaire suit les évolutions législatives pour anticiper les contraintes et assurer la conformité (compliance)."
+            },
+            {
+                question: "Qu'est-ce qu'un signal faible en veille stratégique ?",
+                options: [
+                    { text: "Une information apparemment anodine pouvant annoncer un changement majeur", correct: true },
+                    { text: "Une information très médiatisée", correct: false },
+                    { text: "Une rumeur non vérifiée", correct: false },
+                    { text: "Une donnée statistique peu fiable", correct: false }
+                ],
+                explanation: "Un signal faible est une information discrète dans le flux informationnel, mais qui peut révéler une rupture ou tendance future importante."
+            },
+            {
+                question: "Quelle est la principale caractéristique de la veille stratégique ?",
+                options: [
+                    { text: "Elle intègre toutes les veilles thématiques pour éclairer la stratégie globale", correct: true },
+                    { text: "Elle remplace tous les autres types de veille", correct: false },
+                    { text: "Elle se concentre uniquement sur les concurrents", correct: false },
+                    { text: "Elle est réservée aux grandes entreprises", correct: false }
+                ],
+                explanation: "La veille stratégique n'est pas un type de veille supplémentaire mais une synthèse de toutes les veilles au service de la stratégie."
+            },
+            {
+                question: "Dans l'exemple Netflix vs Blockbuster, quel a été le problème de Blockbuster ?",
+                options: [
+                    { text: "Ne pas avoir détecté le signal faible du changement des habitudes de consommation", correct: true },
+                    { text: "Avoir investi trop d'argent dans la technologie", correct: false },
+                    { text: "Avoir copié la stratégie de Netflix", correct: false },
+                    { text: "Avoir développé son propre service de streaming trop tôt", correct: false }
+                ],
+                explanation: "Blockbuster a refusé le partenariat avec Netflix en 2000, ne voyant pas le potentiel du DVD par correspondance (signal faible)."
+            },
+            {
+                question: "Quel est le principal objectif de la veille d'image / e-réputation ?",
+                options: [
+                    { text: "Surveiller et gérer la perception de la marque pour détecter les crises", correct: true },
+                    { text: "Espionner les concurrents sur les réseaux sociaux", correct: false },
+                    { text: "Augmenter le nombre de followers", correct: false },
+                    { text: "Remplacer le service client", correct: false }
+                ],
+                explanation: "La veille d'image surveille ce qui se dit sur la marque pour détecter rapidement les crises potentielles et mesurer la perception."
+            }
+        ];
+
+        // Quiz System
+        let currentQuiz1 = 0;
+        let currentQuiz2 = 0;
+        let quiz1Score = 0;
+        let quiz2Score = 0;
+        let quiz1Answers = [];
+        let quiz2Answers = [];
+
+        // Render Quiz 1 Question
+        function renderQuiz1Question() {
+            if (currentQuiz1 >= quiz1Questions.length) {
+                showQuiz1Final();
+                return;
+            }
+
+            const question = quiz1Questions[currentQuiz1];
+            const container = document.getElementById('quiz1Container');
+            const shuffledOptions = shuffleArray(question.options);
+
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-200">Question ${currentQuiz1 + 1} sur ${quiz1Questions.length}</h3>
+                    <p class="text-gray-300 mb-6">${question.question}</p>
+                    <div class="space-y-3" id="quiz1-options">
+                        ${shuffledOptions.map((option, index) => `
+                            <div class="quiz-option p-4 rounded-lg" onclick="selectQuiz1Option(${index}, ${option.correct})" data-correct="${option.correct}">
+                                <p class="text-gray-200">${option.text}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            updateQuiz1Progress();
+            document.getElementById('quiz1SubmitBtn').disabled = true;
+            document.getElementById('quiz1NextBtn').classList.add('hidden');
+            document.getElementById('quiz1Feedback').innerHTML = '';
+        }
+
+        function updateQuiz1Progress() {
+            const progress = document.getElementById('quiz1Progress');
+            progress.innerHTML = quiz1Questions.map((_, index) => {
+                let className = 'quiz-progress-dot';
+                if (index < currentQuiz1) className += ' completed';
+                if (index === currentQuiz1) className += ' current';
+                return `<div class="${className}"></div>`;
+            }).join('');
+        }
+
+        function selectQuiz1Option(index, isCorrect) {
+            const options = document.querySelectorAll('#quiz1-options .quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+
+            quiz1Answers[currentQuiz1] = { index, correct: isCorrect };
+            document.getElementById('quiz1SubmitBtn').disabled = false;
+        }
+
+        function submitQuiz1Answer() {
+            const answer = quiz1Answers[currentQuiz1];
+            if (!answer) return;
+
+            const options = document.querySelectorAll('#quiz1-options .quiz-option');
+            options.forEach((opt, idx) => {
+                opt.classList.add('disabled');
+                const isCorrect = opt.dataset.correct === 'true';
+                if (idx === answer.index) {
+                    opt.classList.add(answer.correct ? 'correct' : 'incorrect');
+                } else if (isCorrect) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (answer.correct) {
+                quiz1Score++;
+            }
+
+            const question = quiz1Questions[currentQuiz1];
+            const feedback = document.getElementById('quiz1Feedback');
+            feedback.innerHTML = `
+                <div class="p-4 rounded-lg ${answer.correct ? 'bg-green-900/30 border-l-4 border-green-500' : 'bg-red-900/30 border-l-4 border-red-500'}">
+                    <p class="font-semibold ${answer.correct ? 'text-green-300' : 'text-red-300'} mb-2">
+                        ${answer.correct ? '✓ Correct !' : '✗ Incorrect'}
+                    </p>
+                    <p class="text-sm text-gray-300">${question.explanation}</p>
+                </div>
+            `;
+
+            document.getElementById('quiz1SubmitBtn').classList.add('hidden');
+            document.getElementById('quiz1NextBtn').classList.remove('hidden');
+        }
+
+        function nextQuiz1Question() {
+            currentQuiz1++;
+            if (currentQuiz1 < quiz1Questions.length) {
+                renderQuiz1Question();
+                document.getElementById('quiz1SubmitBtn').classList.remove('hidden');
+            } else {
+                showQuiz1Final();
+            }
+        }
+
+        function showQuiz1Final() {
+            const container = document.getElementById('quiz1Container');
+            const percentage = Math.round((quiz1Score / quiz1Questions.length) * 100);
+
+            container.innerHTML = `
+                <div class="text-center p-8">
+                    <h3 class="text-2xl font-bold text-blue-300 mb-4">Quiz terminé !</h3>
+                    <div class="text-6xl mb-4">${percentage >= 80 ? '🎉' : percentage >= 60 ? '👍' : '📚'}</div>
+                    <p class="text-xl text-gray-200 mb-2">Votre score : <span class="font-bold text-blue-400">${quiz1Score}/${quiz1Questions.length}</span></p>
+                    <p class="text-lg text-gray-300">${percentage}%</p>
+                    <p class="text-sm text-gray-400 mt-4">
+                        ${percentage >= 80 ? 'Excellent ! Vous maîtrisez bien les fondamentaux.' :
+                          percentage >= 60 ? 'Bien ! Revoyez quelques points si besoin.' :
+                          'Relisez le cours pour consolider vos connaissances.'}
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('quiz1SubmitBtn').classList.add('hidden');
+            document.getElementById('quiz1NextBtn').classList.add('hidden');
+            document.getElementById('quiz1Feedback').innerHTML = '';
+            document.getElementById('quiz1Progress').innerHTML = quiz1Questions.map(() => '<div class="quiz-progress-dot completed"></div>').join('');
+        }
+
+        // Quiz 2 - Same logic
+        function renderQuiz2Question() {
+            if (currentQuiz2 >= quiz2Questions.length) {
+                showQuiz2Final();
+                return;
+            }
+
+            const question = quiz2Questions[currentQuiz2];
+            const container = document.getElementById('quiz2Container');
+            const shuffledOptions = shuffleArray(question.options);
+
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-200">Question ${currentQuiz2 + 1} sur ${quiz2Questions.length}</h3>
+                    <p class="text-gray-300 mb-6">${question.question}</p>
+                    <div class="space-y-3" id="quiz2-options">
+                        ${shuffledOptions.map((option, index) => `
+                            <div class="quiz-option p-4 rounded-lg" onclick="selectQuiz2Option(${index}, ${option.correct})" data-correct="${option.correct}">
+                                <p class="text-gray-200">${option.text}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            updateQuiz2Progress();
+            document.getElementById('quiz2SubmitBtn').disabled = true;
+            document.getElementById('quiz2NextBtn').classList.add('hidden');
+            document.getElementById('quiz2Feedback').innerHTML = '';
+        }
+
+        function updateQuiz2Progress() {
+            const progress = document.getElementById('quiz2Progress');
+            progress.innerHTML = quiz2Questions.map((_, index) => {
+                let className = 'quiz-progress-dot';
+                if (index < currentQuiz2) className += ' completed';
+                if (index === currentQuiz2) className += ' current';
+                return `<div class="${className}"></div>`;
+            }).join('');
+        }
+
+        function selectQuiz2Option(index, isCorrect) {
+            const options = document.querySelectorAll('#quiz2-options .quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+
+            quiz2Answers[currentQuiz2] = { index, correct: isCorrect };
+            document.getElementById('quiz2SubmitBtn').disabled = false;
+        }
+
+        function submitQuiz2Answer() {
+            const answer = quiz2Answers[currentQuiz2];
+            if (!answer) return;
+
+            const options = document.querySelectorAll('#quiz2-options .quiz-option');
+            options.forEach((opt, idx) => {
+                opt.classList.add('disabled');
+                const isCorrect = opt.dataset.correct === 'true';
+                if (idx === answer.index) {
+                    opt.classList.add(answer.correct ? 'correct' : 'incorrect');
+                } else if (isCorrect) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (answer.correct) {
+                quiz2Score++;
+            }
+
+            const question = quiz2Questions[currentQuiz2];
+            const feedback = document.getElementById('quiz2Feedback');
+            feedback.innerHTML = `
+                <div class="p-4 rounded-lg ${answer.correct ? 'bg-green-900/30 border-l-4 border-green-500' : 'bg-red-900/30 border-l-4 border-red-500'}">
+                    <p class="font-semibold ${answer.correct ? 'text-green-300' : 'text-red-300'} mb-2">
+                        ${answer.correct ? '✓ Correct !' : '✗ Incorrect'}
+                    </p>
+                    <p class="text-sm text-gray-300">${question.explanation}</p>
+                </div>
+            `;
+
+            document.getElementById('quiz2SubmitBtn').classList.add('hidden');
+            document.getElementById('quiz2NextBtn').classList.remove('hidden');
+        }
+
+        function nextQuiz2Question() {
+            currentQuiz2++;
+            if (currentQuiz2 < quiz2Questions.length) {
+                renderQuiz2Question();
+                document.getElementById('quiz2SubmitBtn').classList.remove('hidden');
+            } else {
+                showQuiz2Final();
+            }
+        }
+
+        function showQuiz2Final() {
+            const container = document.getElementById('quiz2Container');
+            const percentage = Math.round((quiz2Score / quiz2Questions.length) * 100);
+
+            container.innerHTML = `
+                <div class="text-center p-8">
+                    <h3 class="text-2xl font-bold text-purple-300 mb-4">Quiz terminé !</h3>
+                    <div class="text-6xl mb-4">${percentage >= 80 ? '🎉' : percentage >= 60 ? '👍' : '📚'}</div>
+                    <p class="text-xl text-gray-200 mb-2">Votre score : <span class="font-bold text-purple-400">${quiz2Score}/${quiz2Questions.length}</span></p>
+                    <p class="text-lg text-gray-300">${percentage}%</p>
+                    <p class="text-sm text-gray-400 mt-4">
+                        ${percentage >= 80 ? 'Excellent ! Vous comprenez bien les types de veille.' :
+                          percentage >= 60 ? 'Bien ! Quelques révisions peuvent aider.' :
+                          'Relisez les sections sur les types de veille.'}
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('quiz2SubmitBtn').classList.add('hidden');
+            document.getElementById('quiz2NextBtn').classList.add('hidden');
+            document.getElementById('quiz2Feedback').innerHTML = '';
+            document.getElementById('quiz2Progress').innerHTML = quiz2Questions.map(() => '<div class="quiz-progress-dot completed"></div>').join('');
+        }
+
+        // Initialize quizzes
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuiz1Question();
+            renderQuiz2Question();
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

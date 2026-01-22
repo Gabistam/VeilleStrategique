@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J1-S2 : Intelligence Artificielle - Slides</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/theme/night.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --r-background-color: #0f172a;
+            --r-main-font: 'Inter', sans-serif;
+            --r-heading-font: 'Inter', sans-serif;
+            --r-main-color: #e2e8f0;
+            --r-heading-color: #60a5fa;
+            --r-link-color: #3b82f6;
+        }
+
+        .reveal h1, .reveal h2, .reveal h3 {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .reveal .slides section {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(49, 46, 129, 0.6) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px !important;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 3px solid #8b5cf6;
+        }
+
+        .chapter-number {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 4rem;
+            font-weight: bold;
+        }
+
+        .text-small {
+            font-size: 1.2em;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        ul {
+            font-size: 1.4em;
+        }
+
+        .emoji {
+            font-size: 3rem;
+        }
+
+        .timeline-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Slide 1: Titre -->
+            <section>
+                <h1>Intelligence Artificielle</h1>
+                <h3>Jour 1 - Séance 2</h3>
+                <p>Panorama de l'IA et focus sur l'IA générative</p>
+                <p class="text-small" style="margin-top: 50px;"> 2025-2026</p>
+            </section>
+
+            <!-- Slide 2: Objectifs -->
+            <section>
+                <h2><span class="chapter-number">01</span> Objectifs de la séance</h2>
+                <div class="grid-3">
+                    <div class="highlight-box">
+                        <h3 style="color: #60a5fa;">Comprendre</h3>
+                        <p class="text-small">Les différents types d'IA, leur histoire et leurs applications professionnelles</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3 style="color: #60a5fa;">Distinguer</h3>
+                        <p class="text-small">IA classique, Machine Learning, Deep Learning et IA générative</p>
+                    </div>
+                    <div class="highlight-box">
+                        <h3 style="color: #60a5fa;">Pratiquer</h3>
+                        <p class="text-small">Prise en main ChatGPT, Perplexity et Gemini</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 3: Test de Turing -->
+            <section>
+                <h2>📜 1950 - Test de Turing</h2>
+                <div class="highlight-box">
+                    <p class="text-small">Alan Turing pose la question fondamentale : <em>"Les machines peuvent-elles penser ?"</em></p>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h4 style="color: #60a5fa;">💡 Le Test de Turing</h4>
+                    <p class="text-small">Si un humain ne peut pas distinguer une conversation avec une machine d'une conversation avec un humain, alors la machine peut être considérée comme "intelligente".</p>
+                    <p class="text-small" style="margin-top: 15px; color: #a78bfa;">Ce test reste débattu aujourd'hui, notamment avec des IA comme ChatGPT.</p>
+                </div>
+            </section>
+
+            <!-- Slide 4: Naissance de l'IA -->
+            <section>
+                <h2>1956 - Naissance officielle de l'IA</h2>
+                <div class="highlight-box">
+                    <p class="text-small"><strong>Conférence de Dartmouth :</strong> John McCarthy, Marvin Minsky et leurs collègues créent le terme "Intelligence Artificielle"</p>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h4 style="color: #a78bfa;">🎯 L'ambition de l'époque</h4>
+                    <p class="text-small">Les pionniers pensaient créer une IA générale en quelques décennies.</p>
+                    <p class="text-small" style="margin-top: 10px; color: #ef4444;">→ Cette vision optimiste a sous-estimé la complexité, menant au premier "hiver de l'IA" dans les années 70.</p>
+                </div>
+            </section>
+
+            <!-- Slide 5: Hivers de l'IA -->
+            <section>
+                <h2>❄️ 1980-1990 - Les hivers de l'IA</h2>
+                <div class="highlight-box">
+                    <p class="text-small">Périodes de désillusion où les promesses non tenues entraînent une chute drastique des financements</p>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h4 style="color: #60a5fa;">Causes des échecs</h4>
+                    <ul class="text-small">
+                        <li>• Manque de puissance de calcul</li>
+                        <li>• Données insuffisantes pour entraîner les modèles</li>
+                        <li>• Algorithmes trop simplistes</li>
+                        <li>• Promesses marketing irréalistes</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 6: Révolution Deep Learning -->
+            <section>
+                <h2>🚀 2012 - Révolution Deep Learning</h2>
+                <div class="highlight-box">
+                    <p class="text-small"><strong>AlexNet</strong>, un réseau de neurones profond, remporte ImageNet avec <strong style="color: #22c55e;">85% de précision</strong> (vs 74% pour les méthodes classiques)</p>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h4 style="color: #60a5fa;">La convergence parfaite</h4>
+                    <ul class="text-small">
+                        <li>• <strong>Big Data :</strong> Internet génère des milliards d'images et textes</li>
+                        <li>• <strong>GPU :</strong> Cartes graphiques NVIDIA rendent le calcul accessible</li>
+                        <li>• <strong>Algorithmes :</strong> Innovations (dropout, ReLU, batch normalization)</li>
+                        <li>• <strong>Cloud :</strong> AWS, Google Cloud démocratisent l'accès aux ressources</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 7: Ère des Transformers -->
+            <section>
+                <h2>📊 2017-2022 - L'ère des Transformers</h2>
+                <div class="timeline-box">
+                    <p class="text-small"><strong style="color: #60a5fa;">2017 :</strong> Google publie "Attention is All You Need", créant l'architecture Transformer</p>
+                </div>
+                <div class="timeline-box">
+                    <p class="text-small"><strong style="color: #a78bfa;">2018 :</strong> OpenAI lance GPT-1</p>
+                </div>
+                <div class="timeline-box">
+                    <p class="text-small"><strong style="color: #22c55e;">2022 :</strong> ChatGPT démocratise l'IA générative</p>
+                </div>
+                <div class="card" style="margin-top: 20px; background: rgba(34, 197, 94, 0.2); border-color: #22c55e;">
+                    <h4 style="color: #22c55e;">📈 Croissance exponentielle</h4>
+                    <ul class="text-small">
+                        <li>• ChatGPT : 100M utilisateurs en <strong>2 mois</strong></li>
+                        <li>• Instagram : 100M utilisateurs en 2,5 ans</li>
+                        <li>• Netflix : 100M utilisateurs en 10 ans</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 8: IA Faible vs IA Forte -->
+            <section>
+                <h2>🤖 IA Faible vs IA Forte</h2>
+                <div class="grid-2">
+                    <div class="highlight-box">
+                        <h3 style="color: #60a5fa;">IA Faible (Narrow AI)</h3>
+                        <p class="text-small"><strong style="color: #22c55e;">C'est toute l'IA actuelle</strong></p>
+                        <ul class="text-small">
+                            <li>✓ Performance surhumaine dans son domaine</li>
+                            <li>✓ Rapide, fiable, scalable</li>
+                            <li>✗ Aucun transfert de compétences</li>
+                            <li>✗ Pas de conscience réelle</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h3 style="color: #a78bfa;">IA Forte (AGI)</h3>
+                        <p class="text-small"><strong style="color: #ef4444;">N'existe pas encore</strong></p>
+                        <ul class="text-small">
+                            <li>• Apprentissage universel</li>
+                            <li>• Transfert de connaissances</li>
+                            <li>• Raisonnement abstrait</li>
+                            <li>• Conscience (?)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 9: Exemples IA Faible -->
+            <section>
+                <h2>Exemples d'IA Faible (actuelle)</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: #60a5fa;">ChatGPT</h4>
+                        <p class="text-small">Excellent en génération de texte, mais ne peut pas conduire une voiture</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #a78bfa;">AlphaGo</h4>
+                        <p class="text-small">Imbattable au jeu de Go, mais incapable de jouer aux échecs</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #22c55e;">Reconnaissance faciale</h4>
+                        <p class="text-small">Identifie des visages avec précision, mais ne comprend pas ce qu'est un visage</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #f59e0b;">Assistant vocal</h4>
+                        <p class="text-small">Répond à vos questions, mais ne "comprend" pas vraiment le sens</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 10: Horizon AGI -->
+            <section>
+                <h2>🔮 Quand aura-t-on l'AGI ?</h2>
+                <div class="highlight-box">
+                    <p class="text-small">Les experts sont divisés :</p>
+                </div>
+                <div class="grid-3" style="margin-top: 20px;">
+                    <div class="card" style="background: rgba(34, 197, 94, 0.2); border-color: #22c55e;">
+                        <h4 style="color: #22c55e;">Optimistes</h4>
+                        <p class="text-small">10-20 ans</p>
+                        <p class="text-small" style="font-size: 0.7em;">(Elon Musk, Ray Kurzweil)</p>
+                    </div>
+                    <div class="card" style="background: rgba(249, 115, 22, 0.2); border-color: #f97316;">
+                        <h4 style="color: #f97316;">Modérés</h4>
+                        <p class="text-small">50-100 ans</p>
+                        <p class="text-small" style="font-size: 0.7em;">(majorité des chercheurs)</p>
+                    </div>
+                    <div class="card" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444;">
+                        <h4 style="color: #ef4444;">Sceptiques</h4>
+                        <p class="text-small">Jamais ou pas dans notre civilisation</p>
+                    </div>
+                </div>
+                <p class="text-small" style="margin-top: 20px; color: #a78bfa;">💡 Consensus : personne ne sait vraiment. Les prédictions passées se sont toujours trompées.</p>
+            </section>
+
+            <!-- Slide 11: Les 3 vagues - Symbolique -->
+            <section>
+                <h2>🌊 Vague 1 : IA Symbolique (1950-1990)</h2>
+                <div class="highlight-box">
+                    <h4 style="color: #60a5fa;">📐 Principe</h4>
+                    <p class="text-small">L'intelligence peut être encodée sous forme de <strong>règles logiques</strong> : "SI [condition] ALORS [action]"</p>
+                </div>
+                <div class="grid-2" style="margin-top: 20px;">
+                    <div class="card" style="background: rgba(34, 197, 94, 0.2); border-color: #22c55e;">
+                        <h4 style="color: #22c55e;">✅ Avantages</h4>
+                        <ul class="text-small">
+                            <li>• Transparence</li>
+                            <li>• Explicabilité</li>
+                            <li>• Fiabilité</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444;">
+                        <h4 style="color: #ef4444;">❌ Limites fatales</h4>
+                        <ul class="text-small">
+                            <li>• Impossible de scaler</li>
+                            <li>• Trop rigide</li>
+                            <li>• Maintenance coûteuse</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="text-small" style="margin-top: 20px; color: #a78bfa;">💭 Comment coder la règle "reconnaître un chat" ? Il faudrait des millions de règles...</p>
+            </section>
+
+            <!-- Slide 12: Vague 2 - Machine Learning -->
+            <section>
+                <h2>🌊 Vague 2 : Machine Learning (1990-2012)</h2>
+                <div class="highlight-box">
+                    <h4 style="color: #a78bfa;">🧠 Changement de paradigme</h4>
+                    <p class="text-small">Au lieu de coder des règles, <strong>la machine apprend les patterns</strong> à partir d'exemples</p>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h4 style="color: #60a5fa;">💡 Exemple : Filtre anti-spam</h4>
+                    <p class="text-small"><strong>Approche symbolique (échoue) :</strong> "Si email contient 'viagra' → SPAM"<br>→ Les spammeurs écrivent "v!agra" → règle contournée</p>
+                    <p class="text-small" style="margin-top: 15px;"><strong>Approche ML (réussit) :</strong> On montre 10 000 emails spam et 10 000 légitimes<br>→ L'algorithme identifie des patterns et s'adapte automatiquement</p>
+                </div>
+            </section>
+
+            <!-- Slide 13: Algorithmes ML -->
+            <section>
+                <h2>🔧 Algorithmes phares du ML</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: #60a5fa;">SVM</h4>
+                        <p class="text-small">Support Vector Machines - Classification</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #a78bfa;">Random Forest</h4>
+                        <p class="text-small">Prédictions robustes</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #22c55e;">Naive Bayes</h4>
+                        <p class="text-small">Filtrage de spam</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #f59e0b;">K-means</h4>
+                        <p class="text-small">Segmentation clients</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 14: Vague 3 - Deep Learning -->
+            <section>
+                <h2>🌊 Vague 3 : Deep Learning (2012-aujourd'hui)</h2>
+                <div class="highlight-box">
+                    <h4 style="color: #ec4899;">🚀 Le saut quantique</h4>
+                    <p class="text-small">Les <strong>réseaux de neurones profonds</strong> (dizaines/centaines de couches) peuvent apprendre des représentations hiérarchiques complexes</p>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h4 style="color: #60a5fa;">💡 Moment charnière : AlexNet (2012)</h4>
+                    <div class="grid-2" style="margin-top: 10px;">
+                        <div style="background: rgba(239, 68, 68, 0.3); padding: 15px; border-radius: 8px;">
+                            <p class="text-small"><strong>Approche classique (2011)</strong></p>
+                            <p class="text-small">Précision : 74%</p>
+                        </div>
+                        <div style="background: rgba(34, 197, 94, 0.3); padding: 15px; border-radius: 8px;">
+                            <p class="text-small"><strong>AlexNet Deep Learning (2012)</strong></p>
+                            <p class="text-small">Précision : 85%</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 15: Pourquoi maintenant ? -->
+            <section>
+                <h2>⚡ Pourquoi le Deep Learning maintenant ?</h2>
+                <div class="text-small" style="text-align: left;">
+                    <div class="highlight-box">
+                        <p><strong style="color: #60a5fa;">1. Big Data :</strong> Internet a généré des quantités massives de données</p>
+                    </div>
+                    <div class="highlight-box">
+                        <p><strong style="color: #a78bfa;">2. GPU :</strong> Les cartes graphiques NVIDIA permettent de paralléliser les calculs (×1000 plus rapide)</p>
+                    </div>
+                    <div class="highlight-box">
+                        <p><strong style="color: #22c55e;">3. Cloud :</strong> AWS, Google Cloud rendent la puissance de calcul accessible à tous</p>
+                    </div>
+                    <div class="highlight-box">
+                        <p><strong style="color: #f59e0b;">4. Innovations algo :</strong> Transformers (2017), RLHF, etc.</p>
+                    </div>
+                    <div class="highlight-box">
+                        <p><strong style="color: #ec4899;">5. Investissements :</strong> Milliards $ injectés (OpenAI, DeepMind, Anthropic...)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 16: Tableau comparatif 3 vagues -->
+            <section>
+                <h2>📊 Tableau comparatif : 3 vagues</h2>
+                <table style="font-size: 0.7em; width: 100%;">
+                    <thead style="background: rgba(59, 130, 246, 0.2);">
+                        <tr>
+                            <th style="padding: 10px;">Critère</th>
+                            <th style="padding: 10px;">IA Symbolique</th>
+                            <th style="padding: 10px;">Machine Learning</th>
+                            <th style="padding: 10px;">Deep Learning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 8px;"><strong>Approche</strong></td>
+                            <td style="padding: 8px;">Règles codées</td>
+                            <td style="padding: 8px;">Apprentissage stats</td>
+                            <td style="padding: 8px;">Réseaux neurones</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><strong>Données requises</strong></td>
+                            <td style="padding: 8px;">Aucune</td>
+                            <td style="padding: 8px;">Milliers</td>
+                            <td style="padding: 8px;">Millions/Milliards</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><strong>Explicabilité</strong></td>
+                            <td style="padding: 8px; color: #22c55e;">✓ Totale</td>
+                            <td style="padding: 8px; color: #f59e0b;">~ Partielle</td>
+                            <td style="padding: 8px; color: #ef4444;">✗ Boîte noire</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><strong>Performance</strong></td>
+                            <td style="padding: 8px;">Limitée</td>
+                            <td style="padding: 8px;">Bonne</td>
+                            <td style="padding: 8px; color: #22c55e;">Excellente</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><strong>Coût</strong></td>
+                            <td style="padding: 8px;">Expertise chère</td>
+                            <td style="padding: 8px; color: #22c55e;">Faible</td>
+                            <td style="padding: 8px; color: #ef4444;">Très élevé (GPU)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Slide 17: Types d'IA -->
+            <section>
+                <h2><span class="chapter-number">03</span> Les types d'IA</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: #60a5fa;">📊 Machine Learning</h4>
+                        <ul class="text-small">
+                            <li>• Supervisé (classification, prédiction)</li>
+                            <li>• Non supervisé (segmentation, anomalies)</li>
+                            <li>• Renforcement (jeux, robots)</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #a78bfa;">🧠 Deep Learning</h4>
+                        <p class="text-small">Réseaux de neurones profonds inspirés du cerveau</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #22c55e;">👁️ Computer Vision</h4>
+                        <p class="text-small">Diagnostic médical, voitures autonomes, reconnaissance faciale</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #f59e0b;">💬 NLP</h4>
+                        <p class="text-small">Comprendre, analyser et générer le langage humain</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 18: IA Générative -->
+            <section>
+                <h2><span class="chapter-number">04</span> Focus : IA Générative</h2>
+                <div class="highlight-box">
+                    <p class="text-small">Contrairement aux IA qui <em>analysent</em>, les IA génératives <strong style="color: #60a5fa;">créent du contenu original</strong> : texte, image, vidéo, audio, code...</p>
+                </div>
+                <div class="grid-2" style="margin-top: 20px;">
+                    <div class="card" style="background: rgba(59, 130, 246, 0.2); border-color: #3b82f6;">
+                        <h4 style="color: #60a5fa;">IA traditionnelle</h4>
+                        <p class="text-small">"Cette image contient-elle un chat ?"<br>→ Oui/Non</p>
+                    </div>
+                    <div class="card" style="background: rgba(236, 72, 153, 0.2); border-color: #ec4899;">
+                        <h4 style="color: #ec4899;">IA générative</h4>
+                        <p class="text-small">"Génère une image de chat steampunk"<br>→ Crée image unique</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 19: Qu'est-ce qu'un LLM ? -->
+            <section>
+                <h2>🤖 Qu'est-ce qu'un LLM ?</h2>
+                <div class="highlight-box">
+                    <p class="text-small"><strong>Large Language Model</strong> - Réseau de neurones géant (milliards de paramètres) entraîné sur des quantités massives de texte</p>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h4 style="color: #a78bfa;">Principe : "Prédire le mot suivant"</h4>
+                    <p class="text-small">Comme l'autocomplète de votre smartphone, mais infiniment plus sophistiqué. En enchaînant ces prédictions, il génère des textes cohérents.</p>
+                </div>
+                <div class="highlight-box" style="margin-top: 20px; background: rgba(249, 115, 22, 0.2); border-color: #f97316;">
+                    <p class="text-small"><strong style="color: #f97316;">⚠️ Important :</strong> Les LLM ne "pensent" pas, ne "comprennent" pas vraiment. Ils prédisent statistiquement. D'où les hallucinations possibles.</p>
+                </div>
+            </section>
+
+            <!-- Slide 20: Familles de GenAI -->
+            <section>
+                <h2>🎨 Les familles de GenAI</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: #60a5fa;">📝 Texte</h4>
+                        <p class="text-small">GPT-4, Claude, Gemini, Llama</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #a78bfa;">🎨 Image</h4>
+                        <p class="text-small">Midjourney, DALL-E, Stable Diffusion</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #22c55e;">🎬 Vidéo</h4>
+                        <p class="text-small">Sora, Runway, Pika</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #f59e0b;">🎵 Audio</h4>
+                        <p class="text-small">ElevenLabs, Suno, Udio</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 21: Applications professionnelles -->
+            <section>
+                <h2>💼 Applications professionnelles</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: #60a5fa;">Communication & Marketing</h4>
+                        <p class="text-small">Création de contenu, personnalisation, chatbots, copywriting</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #a78bfa;">Productivité</h4>
+                        <p class="text-small">Rédaction, synthèse, traduction, extraction d'insights</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #22c55e;">Créativité</h4>
+                        <p class="text-small">Idéation, prototypage, génération d'assets visuels</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: #f59e0b;">Code</h4>
+                        <p class="text-small">Assistance développement, debugging, documentation</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 22: Récapitulatif -->
+            <section>
+                <h2>📋 Récapitulatif</h2>
+                <div class="grid-2">
+                    <div class="highlight-box">
+                        <h4 style="color: #60a5fa;">Ce que vous maîtrisez maintenant</h4>
+                        <ul class="text-small">
+                            <li>✓ Histoire de l'IA de 1950 à aujourd'hui</li>
+                            <li>✓ Différence IA faible / IA forte (AGI)</li>
+                            <li>✓ Les 3 vagues : Symbolique, ML, Deep Learning</li>
+                            <li>✓ Types d'IA : ML, DL, CV, NLP, GenAI</li>
+                            <li>✓ Applications professionnelles concrètes</li>
+                            <li>✓ Concepts clés des LLM</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h4 style="color: #a78bfa;">Pour aller plus loin</h4>
+                        <ul class="text-small">
+                            <li>📚 Explorez les outils d'IA générative</li>
+                            <li>🔍 Suivez l'actualité IA</li>
+                            <li>💡 Identifiez les cas d'usage</li>
+                            <li>⚖️ Restez critique : vérifiez les outputs</li>
+                            <li>🧪 Testez ChatGPT, Perplexity, Gemini</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+       
+
+            <!-- Slide 24: Merci -->
+            <section>
+                <h1>Merci pour votre attention ! 🎉</h1>
+                <p style="margin-top: 50px;">Questions ?</p>
+                <p class="text-small" style="margin-top: 80px;">
+                    <br>
+                    Veille Stratégique et Analyse des Tendances IA<br>
+                    2025-2026
+                </p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            center: true,
+            transition: 'slide',
+            controls: true,
+            progress: true,
+            slideNumber: true,
+            keyboard: true,
+            overview: true,
+            touch: true,
+            loop: false,
+            rtl: false,
+            navigationMode: 'default',
+            shuffle: false,
+            fragments: true,
+            embedded: false,
+            help: true,
+            showNotes: false,
+            autoPlayMedia: null,
+            preloadIframes: null,
+            autoSlide: 0,
+            autoSlideStoppable: true,
+            mouseWheel: false,
+            hideInactiveCursor: true,
+            hideCursorTime: 5000,
+            previewLinks: false,
+            width: 1280,
+            height: 720,
+            margin: 0.04,
+            minScale: 0.2,
+            maxScale: 2.0
+        });
+    </script>
+</body>
+</html>
