@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J2-S4 : IA Générative pour la Veille Marketing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%); min-height: 100vh; }
+        .section-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(148, 163, 184, 0.1); transition: all 0.3s ease; }
+        .section-card:hover { background: rgba(30, 41, 59, 0.8); border-color: rgba(148, 163, 184, 0.2); }
+        .gradient-text { background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .chapter-number { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .quiz-option { background: rgba(30, 41, 59, 0.4); border: 2px solid rgba(148, 163, 184, 0.2); transition: all 0.3s ease; cursor: pointer; }
+        .quiz-option:hover:not(.disabled) { background: rgba(30, 41, 59, 0.7); border-color: rgba(96, 165, 250, 0.5); transform: translateX(5px); }
+        .quiz-option.selected { background: rgba(59, 130, 246, 0.2); border-color: #3b82f6; }
+        .quiz-option.correct { background: rgba(34, 197, 94, 0.2); border-color: #22c55e; animation: correctPulse 0.5s ease; }
+        .quiz-option.incorrect { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; animation: incorrectShake 0.5s ease; }
+        .quiz-option.disabled { opacity: 0.6; cursor: not-allowed; }
+        @keyframes correctPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+        @keyframes incorrectShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .progress-bar { background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%); height: 4px; transition: width 0.5s ease; }
+        .highlight-box { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border-left: 4px solid #3b82f6; padding: 1.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+        .nav-btn { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); transition: all 0.3s ease; }
+        .nav-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3); }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .example-card { background: rgba(15, 23, 42, 0.6); border-left: 3px solid #8b5cf6; padding: 1.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+        ul.custom-list { list-style: none; padding-left: 0; }
+        ul.custom-list li { position: relative; padding-left: 3rem; margin-bottom: 2.5rem; }
+        ul.custom-list li:before { content: "▹"; position: absolute; left: 0; color: #3b82f6; font-weight: bold; }
+        .quiz-progress { display: flex; gap: 1rem; justify-content: center; margin-bottom: 4rem; }
+        .quiz-progress-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(148, 163, 184, 0.3); transition: all 0.3s ease; }
+        .quiz-progress-dot.completed { background: #22c55e; }
+        .quiz-progress-dot.current { background: #3b82f6; transform: scale(1.5); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.6s ease-out; }
+        details summary { cursor: pointer; user-select: none; padding: 3rem; background: rgba(59, 130, 246, 0.1); border-radius: 0.5rem; margin-bottom: 2rem; }
+        details summary:hover { background: rgba(59, 130, 246, 0.2); }
+        details[open] summary { background: rgba(59, 130, 246, 0.2); border-bottom: 2px solid #3b82f6; margin-bottom: 4rem; }
+        details { margin-bottom: 4rem; }
+        details > div { margin-top: 3rem; }
+        section { margin-bottom: 16rem; }
+        .section-card { margin-bottom: 8rem; }
+        p { margin-bottom: 3rem; }
+        .space-y-6 > * + * { margin-top: 4rem; }
+        .space-y-4 > * + * { margin-top: 3rem; }
+        .space-y-3 > * + * { margin-top: 2.5rem; }
+        .space-y-2 > * + * { margin-top: 2rem; }
+        .highlight-box { margin-top: 3rem; margin-bottom: 3rem; padding: 3rem; }
+        .example-card { margin-top: 3rem; margin-bottom: 3rem; padding: 3rem; }
+        ul, ol { margin-top: 2.5rem; margin-bottom: 2.5rem; }
+        ul li, ol li { margin-bottom: 2rem; }
+        h2, h3, h4 { margin-top: 4rem; margin-bottom: 3rem; }
+        h2:first-child, h3:first-child, h4:first-child { margin-top: 0; }
+        .border-l-4 { margin-top: 3rem; margin-bottom: 3rem; padding: 3rem; }
+        .grid { gap: 3rem; }
+        div[class*="bg-gradient"] { margin-top: 3rem; margin-bottom: 3rem; }
+        div[class*="bg-slate"] { margin-top: 2.5rem; margin-bottom: 2.5rem; }
+        div[class*="bg-blue"] { margin-top: 2.5rem; margin-bottom: 2.5rem; }
+        div[class*="bg-purple"] { margin-top: 2.5rem; margin-bottom: 2.5rem; }
+        table { margin-top: 3rem; margin-bottom: 3rem; }
+        .quiz-option { margin-bottom: 2rem; }
+        .prompt-card { background: rgba(15, 23, 42, 0.9); border: 2px solid rgba(139, 92, 246, 0.3); padding: 2rem; border-radius: 0.75rem; font-family: 'Courier New', monospace; }
+        .prompt-card:hover { border-color: rgba(139, 92, 246, 0.6); }
+        code { background: rgba(139, 92, 246, 0.2); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.9em; }
+        pre { background: rgba(15, 23, 42, 0.8); padding: 2rem; border-radius: 0.5rem; overflow-x: auto; }
+    </style>
+</head>
+<body class="text-gray-100">
+    <div class="fixed top-0 left-0 w-full h-1 bg-gray-800 z-50">
+        <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+    </div>
+
+    <header class="sticky top-1 z-40 py-6 px-4 backdrop-blur-md bg-slate-900/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold gradient-text">Veille Stratégique et Analyse des Tendances IA</h1>
+                    <p class="text-gray-400 mt-1">Jour 2 - Séance 4 : IA Générative pour la Veille Marketing</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        
+        <!-- Objectifs -->
+        <section id="objectifs" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">01</span>
+                <span class="gradient-text">Objectifs de la séance</span>
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-400">Maîtriser</h3>
+                    <p class="text-gray-300">Le prompting marketing : campagnes, trends, création de contenu</p>
+                </div>
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-400">Créer</h3>
+                    <p class="text-gray-300">Des workflows veille + IA pour social media et competitive intelligence</p>
+                </div>
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-400">Automatiser</h3>
+                    <p class="text-gray-300">L'analyse de tendances, benchmark créatifs, génération d'idées contenu</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rappel S3 -->
+        <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/30 rounded-xl p-8 mb-10">
+            <h3 class="text-xl font-semibold text-purple-300 mb-4">📚 Rappel Séance 3</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <p class="font-semibold text-blue-300 mb-3">Écosystème & Sources</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• 5 domaines IA marketing : Créatif, Copywriting, Vidéo, Automation, Analytics</li>
+                        <li>• Sources : Marketing AI Institute, TikTok Creative Center, Meta Ad Library</li>
+                        <li>• Workflow CM : 30 min/jour (trends + concurrents + actus)</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-semibold text-purple-300 mb-3">Outils configurés</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• Feedly (agrégation blogs marketing)</li>
+                        <li>• Google Alerts (surveillance concurrents)</li>
+                        <li>• Notion (organisation veille)</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="text-sm text-gray-400 mt-4">
+                <strong class="text-yellow-300">Aujourd'hui :</strong> On utilise <strong class="text-blue-400">l'IA générative</strong> pour analyser, synthétiser et créer à partir de la veille collectée.
+            </p>
+        </div>
+
+        <!-- Prompting Marketing -->
+        <section id="prompting" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">02</span>
+                <span class="gradient-text">Templates de prompts pour le marketing</span>
+            </h2>
+
+            <p class="text-gray-300">
+                Pour le marketing digital, l'IA excelle dans : <strong class="text-blue-400">analyse de campagnes</strong>, 
+                <strong class="text-purple-400">extraction de trends</strong>, <strong class="text-green-400">génération d'idées contenu</strong>, 
+                <strong class="text-yellow-400">benchmark créatifs</strong>.
+            </p>
+
+            <details open class="mt-8">
+                <summary class="font-semibold text-lg text-blue-300">📱 Template 1 : Analyse de tendances TikTok/Instagram</summary>
+                <div class="space-y-4">
+                    <p class="text-gray-300"><strong>Objectif :</strong> Extraire insights actionnables des trends social media</p>
+                    
+                    <div class="prompt-card">
+                        <pre class="text-sm text-blue-200"><code>Tu es un expert social media. Analyse ces 5 trends TikTok/Instagram.
+
+TRENDS :
+[Coller descriptions de trends du TikTok Creative Center]
+
+EXTRAIS :
+1. 🎯 FORMAT DOMINANT
+   - Type de vidéo (transition, storytelling, POV, dance...)
+   - Durée moyenne
+   - Style de montage
+
+2. 🎵 AUDIO & MUSIQUE
+   - Sons/musiques récurrents
+   - Pourquoi ils fonctionnent ?
+
+3. 💡 HOOK (accroche)
+   - Quels premiers mots/images captent ?
+   - Stratégies d'attention
+
+4. 📊 ÉLÉMENTS VIRAUX
+   - Points communs entre les posts performants
+   - Ce qui fait réagir (likes, partages, commentaires)
+
+5. 🎨 ADAPTATION POUR [VOTRE MARQUE]
+   - 3 idées de posts inspirés de ces trends
+   - Adaptations à notre ton/produit
+
+TON : Actionnable, concret, orienté création contenu</code></pre>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded mt-4">
+                        <p class="text-xs font-semibold text-gray-400 mb-2">💡 USAGE :</p>
+                        <p class="text-sm text-gray-300">
+                            Utiliser après 10 min de scroll TikTok Creative Center. Copier les 5 top trends de la semaine + coller dans ChatGPT/Claude.
+                            Résultat : brief créatif prêt à l'emploi pour votre content creator.
+                        </p>
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary class="font-semibold text-lg text-purple-300">🕵️ Template 2 : Competitive Intelligence (campagne concurrent)</summary>
+                <div class="space-y-4">
+                    <p class="text-gray-300"><strong>Objectif :</strong> Décrypter la stratégie marketing d'un concurrent</p>
+                    
+                    <div class="prompt-card">
+                        <pre class="text-sm text-purple-200"><code>Analyse cette campagne publicitaire de [CONCURRENT].
+
+CONTEXTE : [Secteur, positionnement concurrent]
+
+CRÉATIFS :
+[Coller screenshots ou descriptions des ads de Meta Ad Library]
+
+ANALYSE :
+
+1. 🎯 STRATÉGIE IDENTIFIÉE
+   - Quel message principal ?
+   - Quelle promesse/bénéfice mis en avant ?
+   - Quel ton (premium, accessible, fun, sérieux) ?
+
+2. 👥 CIBLE VISÉE
+   - Qui est la cible (âge, genre, intérêts probables) ?
+   - Quels pain points adressés ?
+
+3. 🎨 CRÉATIFS & FORMATS
+   - Types de visuels (photo produit, lifestyle, UGC, motion...)
+   - Structures des messages (AIDA, PAS, storytelling...)
+   - CTA utilisés
+
+4. 💰 INSIGHTS BUDGET/PORTÉE
+   - Estimation intensité de la campagne (nombre de variantes)
+   - Durée apparente
+   - Zones géographiques ciblées
+
+5. 💡 CE QU'ON PEUT APPRENDRE
+   - Leurs forces à copier
+   - Leurs faiblesses = nos opportunités
+   - 3 actions pour nous différencier
+
+FORMAT : Rapport structuré, factuel, orienté action</code></pre>
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary class="font-semibold text-lg text-green-300">💡 Template 3 : Générateur d'idées de contenu</summary>
+                <div class="space-y-4">
+                    <p class="text-gray-300"><strong>Objectif :</strong> Créer un planning éditorial basé sur la veille</p>
+                    
+                    <div class="prompt-card">
+                        <pre class="text-sm text-green-200"><code>Génère 15 idées de posts pour [PLATEFORME] basées sur ces insights.
+
+CONTEXTE MARQUE :
+- Secteur : [ex: cosmétique bio]
+- Cible : [ex: femmes 25-40 ans, éco-conscientes]
+- Ton : [ex: éducatif, bienveillant, accessible]
+- Objectif : [ex: engagement + notoriété]
+
+INSIGHTS DE VEILLE :
+[Coller 3-5 trends/actus récentes de votre veille]
+
+GÉNÈRE 15 IDÉES avec cette structure :
+
+📱 FORMAT : [Carrousel / Reel / Story / Post statique]
+📝 CONCEPT : [Résumé en 1 phrase]
+🎯 HOOK : [Première phrase qui capte l'attention]
+💬 ANGLE : [Éducatif / Divertissant / Inspirant / Promo]
+🏷️ HASHTAGS : [3-5 pertinents]
+
+CONTRAINTES :
+- Mix de formats (pas que des Reels)
+- 50% éducatif, 30% divertissant, 20% promo
+- Au moins 3 posts qui surfent sur trends actuels
+
+TON : Créatif, varié, aligné avec l'ADN de marque</code></pre>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded mt-4">
+                        <p class="text-xs font-semibold text-gray-400 mb-2">💡 VARIANTE EXPRESS :</p>
+                        <p class="text-sm text-gray-300">
+                            "Donne-moi 5 idées de Reels Instagram pour [marque] basées sur les trends TikTok de cette semaine. 
+                            Format : Concept + Hook + Hashtags."
+                        </p>
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary class="font-semibold text-lg text-yellow-300">📊 Template 4 : Benchmark créatifs</summary>
+                <div class="space-y-4">
+                    <p class="text-gray-300"><strong>Objectif :</strong> Comparer et noter des créatifs publicitaires</p>
+                    
+                    <div class="prompt-card">
+                        <pre class="text-sm text-yellow-200"><code>Compare ces 5 créatifs publicitaires et crée un benchmark.
+
+CRÉATIFS :
+[Coller 5 screenshots avec descriptions]
+
+CRITÈRES D'ÉVALUATION (note /10 pour chaque) :
+
+1. 👁️ ATTENTION (impact visuel immédiat)
+2. 💬 CLARTÉ DU MESSAGE (compréhension en <3 sec)
+3. 🎨 ORIGINALITÉ CRÉATIVE (se démarque de la masse)
+4. 🎯 ALIGNEMENT CIBLE (parle à la bonne audience)
+5. 🔥 DÉSIRABILITÉ (donne envie d'agir)
+
+TABLEAU DE NOTATION :
+| Créatif | Attention | Clarté | Originalité | Cible | Désirabilité | TOTAL |
+|---------|-----------|--------|-------------|-------|--------------|-------|
+| Créa 1  |    /10    |  /10   |    /10      |  /10  |     /10      |  /50  |
+| ...     |           |        |             |       |              |       |
+
+ENSUITE :
+- TOP 3 créatifs et pourquoi
+- Patterns gagnants identifiés
+- 3 recommandations pour nos prochains créatifs
+
+FORMAT : Tableau + analyse synthétique</code></pre>
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary class="font-semibold text-lg text-red-300">✍️ Template 5 : Optimisation de copy publicitaire</summary>
+                <div class="space-y-4">
+                    <p class="text-gray-300"><strong>Objectif :</strong> Améliorer un texte publicitaire existant</p>
+                    
+                    <div class="prompt-card">
+                        <pre class="text-sm text-red-200"><code>Optimise ce copy publicitaire pour augmenter le CTR.
+
+COPY ACTUEL :
+[Coller votre texte]
+
+CONTEXTE :
+- Produit : [Description]
+- Cible : [Profil]
+- Objectif : [Conversions / Clics / Notoriété]
+- Canal : [Facebook Ads / Google Ads / Instagram...]
+
+GÉNÈRE 5 VARIANTES avec :
+
+1. VERSION ÉMOTIONNELLE
+   - Joue sur les émotions (peur, joie, appartenance)
+   - Storytelling court
+
+2. VERSION BÉNÉFICES
+   - Liste 3 bénéfices concrets
+   - Résultats mesurables
+
+3. VERSION URGENCE
+   - Scarcité ou temps limité
+   - FOMO (Fear of Missing Out)
+
+4. VERSION QUESTION
+   - Démarre par une question engageante
+   - Interpelle directement
+
+5. VERSION SOCIAL PROOF
+   - Chiffres, témoignages, stats
+   - Preuve de popularité
+
+Pour chaque variante :
+- Titre (max 40 caractères)
+- Corps du texte (max 125 caractères)
+- CTA (Call-to-Action)
+
++ RECOMMANDATION : Quelle variante A/B tester en priorité et pourquoi</code></pre>
+                    </div>
+                </div>
+            </details>
+
+            <div class="example-card p-6 rounded-xl mt-8">
+                <h4 class="font-semibold text-yellow-300 mb-3">💡 Conseils de prompting marketing</h4>
+                <ul class="text-sm text-gray-300 space-y-2">
+                    <li>• <strong>Contexte marque :</strong> Toujours préciser secteur, cible, ton, objectif</li>
+                    <li>• <strong>Exemples concrets :</strong> Montrer 2-3 exemples de ce que vous voulez</li>
+                    <li>• <strong>Formats spécifiques :</strong> Demander tableaux, bullets, titres courts...</li>
+                    <li>• <strong>Contraintes claires :</strong> Limites de caractères, nombre de variantes...</li>
+                    <li>• <strong>Itération :</strong> "Rends la version 2 plus punchy" → affiner les outputs</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- QCM -->
+        <section id="qcm" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="text-3xl mr-4">📝</span>
+                <span class="gradient-text">QCM : Prompting et workflows marketing</span>
+            </h2>
+            
+            <div class="quiz-progress" id="quizProgress"></div>
+            <div id="quizContainer"></div>
+            
+            <div class="mt-6 flex items-center justify-between">
+                <button id="quizSubmitBtn" onclick="submitQuizAnswer()" class="nav-btn text-white px-8 py-3 rounded-lg font-semibold" disabled>
+                    Valider la réponse
+                </button>
+                <button id="quizNextBtn" onclick="nextQuizQuestion()" class="nav-btn text-white px-8 py-3 rounded-lg font-semibold hidden">
+                    Question suivante →
+                </button>
+                <div id="quizScore" class="text-lg font-semibold"></div>
+            </div>
+            
+            <div id="quizFeedback" class="mt-6"></div>
+        </section>
+
+        <!-- Workflows -->
+        <section id="workflows" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">03</span>
+                <span class="gradient-text">Workflows Marketing : Veille + IA</span>
+            </h2>
+
+            <p class="text-gray-300">
+                3 workflows clés pour <strong class="text-blue-400">automatiser votre veille marketing</strong> avec l'IA.
+            </p>
+
+            <details open>
+                <summary class="font-semibold text-lg text-blue-300">🔄 Workflow 1 : Veille Social Media Hebdo (1h/semaine)</summary>
+                <div class="space-y-6">
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="bg-blue-900/30 p-4 rounded border-l-4 border-blue-500">
+                            <p class="font-semibold text-blue-300 mb-2 text-sm">1. Collecte (20 min)</p>
+                            <p class="text-xs text-gray-300">• TikTok Creative Center : top 10 trends</p>
+                            <p class="text-xs text-gray-300">• Instagram Explore : formats viraux</p>
+                            <p class="text-xs text-gray-300">• Screenshot + notes rapides</p>
+                        </div>
+                        <div class="bg-purple-900/30 p-4 rounded border-l-4 border-purple-500">
+                            <p class="font-semibold text-purple-300 mb-2 text-sm">2. Analyse IA (20 min)</p>
+                            <p class="text-xs text-gray-300">• ChatGPT : Template "Analyse trends"</p>
+                            <p class="text-xs text-gray-300">• Extraire formats + hooks + audio</p>
+                            <p class="text-xs text-gray-300">• Générer adaptations marque</p>
+                        </div>
+                        <div class="bg-green-900/30 p-4 rounded border-l-4 border-green-500">
+                            <p class="font-semibold text-green-300 mb-2 text-sm">3. Idéation (15 min)</p>
+                            <p class="text-xs text-gray-300">• Template "Générateur idées"</p>
+                            <p class="text-xs text-gray-300">• 10-15 concepts de posts</p>
+                            <p class="text-xs text-gray-300">• Brief créatifs ready</p>
+                        </div>
+                        <div class="bg-yellow-900/30 p-4 rounded border-l-4 border-yellow-500">
+                            <p class="font-semibold text-yellow-300 mb-2 text-sm">4. Planning (5 min)</p>
+                            <p class="text-xs text-gray-300">• Ajouter à Notion/Trello</p>
+                            <p class="text-xs text-gray-300">• Assigner content creator</p>
+                            <p class="text-xs text-gray-300">• Dates de publication</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-900/20 border-l-4 border-blue-500 p-6 rounded">
+                        <p class="font-semibold text-blue-300 mb-3">📋 OUTPUT : Trend Report + 15 idées de contenu prêtes</p>
+                        <p class="text-sm text-gray-300">Au lieu de passer 3h à analyser manuellement, l'IA vous donne les insights en 20 min. 
+                        Vous économisez 2h+ par semaine = 8h/mois = 1 journée de travail !</p>
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary class="font-semibold text-lg text-purple-300">🕵️ Workflow 2 : Competitive Intelligence Mensuel (2h/mois)</summary>
+                <div class="space-y-6">
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-purple-900/30 p-4 rounded">
+                            <p class="font-semibold text-purple-300 mb-3 text-sm">Phase 1 : Collecte (30 min)</p>
+                            <ul class="text-xs text-gray-300 space-y-1">
+                                <li>• Meta Ad Library : 10-15 ads concurrents</li>
+                                <li>• Google Alerts : actualités du mois</li>
+                                <li>• Social media : nouveaux contenus</li>
+                                <li>• Site web : nouveaux produits/offres</li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-900/30 p-4 rounded">
+                            <p class="font-semibold text-blue-300 mb-3 text-sm">Phase 2 : Analyse (60 min)</p>
+                            <ul class="text-xs text-gray-300 space-y-1">
+                                <li>• Template "Competitive Intelligence"</li>
+                                <li>• Analyse de chaque campagne</li>
+                                <li>• Benchmark créatifs</li>
+                                <li>• Extraction patterns gagnants</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-900/30 p-4 rounded">
+                            <p class="font-semibold text-green-300 mb-3 text-sm">Phase 3 : Rapport (30 min)</p>
+                            <ul class="text-xs text-gray-300 space-y-1">
+                                <li>• Synthèse insights clés</li>
+                                <li>• Opportunités identifiées</li>
+                                <li>• Recommandations actions</li>
+                                <li>• Présentation équipe</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary class="font-semibold text-lg text-green-300">⚡ Workflow 3 : Optimisation Copy (30 min/campagne)</summary>
+                <div class="space-y-4">
+                    <p class="text-gray-300">Pour chaque nouvelle campagne pub, générer et A/B tester plusieurs variantes de copy</p>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-900/50 p-4 rounded">
+                            <p class="font-semibold text-blue-300 mb-3 text-sm">Étape 1 : Version initiale (5 min)</p>
+                            <p class="text-xs text-gray-300">Rédiger copy v1 manuellement</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded">
+                            <p class="font-semibold text-purple-300 mb-3 text-sm">Étape 2 : IA génère variantes (10 min)</p>
+                            <p class="text-xs text-gray-300">Template "Optimisation copy" → 5 variantes</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded">
+                            <p class="font-semibold text-green-300 mb-3 text-sm">Étape 3 : Sélection (10 min)</p>
+                            <p class="text-xs text-gray-300">Garder top 3 pour A/B tests</p>
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded">
+                            <p class="font-semibold text-yellow-300 mb-3 text-sm">Étape 4 : Lancement (5 min)</p>
+                            <p class="text-xs text-gray-300">Setup tests dans Ads Manager</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-900/20 border-l-4 border-green-500 p-4 rounded mt-4">
+                        <p class="text-sm text-gray-300">
+                            <strong class="text-green-300">Résultat :</strong> Au lieu de passer 2h à brainstorm manuellement, 
+                            vous avez 5 variantes testables en 10 min. Les tests révèlent souvent +20-50% de CTR sur la meilleure variante.
+                        </p>
+                    </div>
+                </div>
+            </details>
+        </section>
+
+        <!-- Récap final -->
+        <section id="recap" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="text-3xl mr-4">🎓</span>
+                <span class="gradient-text">Module complet terminé !</span>
+            </h2>
+
+            <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 border-2 border-green-500/30 rounded-xl p-8 mb-8">
+                <h3 class="text-xl font-semibold text-green-300 mb-4">Récapitulatif des 4 séances</h3>
+                <div class="grid md:grid-cols-4 gap-4">
+                    <div class="bg-blue-900/30 p-4 rounded text-center">
+                        <p class="text-2xl mb-2">📚</p>
+                        <p class="text-xs font-semibold text-blue-300">J1-S1</p>
+                        <p class="text-xs text-gray-400">Veille stratégique, signaux faibles</p>
+                    </div>
+                    <div class="bg-purple-900/30 p-4 rounded text-center">
+                        <p class="text-2xl mb-2">🤖</p>
+                        <p class="text-xs font-semibold text-purple-300">J1-S2</p>
+                        <p class="text-xs text-gray-400">Panorama IA, GenAI, outils</p>
+                    </div>
+                    <div class="bg-green-900/30 p-4 rounded text-center">
+                        <p class="text-2xl mb-2">🛠️</p>
+                        <p class="text-xs font-semibold text-green-300">J2-S3</p>
+                        <p class="text-xs text-gray-400">Outils veille marketing, sources</p>
+                    </div>
+                    <div class="bg-yellow-900/30 p-4 rounded text-center">
+                        <p class="text-2xl mb-2">⚡</p>
+                        <p class="text-xs font-semibold text-yellow-300">J2-S4</p>
+                        <p class="text-xs text-gray-400">Prompts + workflows IA marketing</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-blue-300 mb-4">🎯 Compétences acquises</h3>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>✅ Configurer veille marketing (Feedly, Google Alerts, TikTok Creative Center)</li>
+                        <li>✅ Prompts marketing (trends, campagnes, idées contenu, benchmark)</li>
+                        <li>✅ Workflows automatisés (social media, competitive intelligence)</li>
+                        <li>✅ Organisation Notion pour veille</li>
+                        <li>✅ Gain de temps : 5-10h/semaine économisées</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-purple-300 mb-4">🚀 À appliquer immédiatement</h3>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>📱 Tester workflow hebdo trends (1h vendredi)</li>
+                        <li>🕵️ Analyser 3 campagnes concurrents avec IA</li>
+                        <li>✍️ Générer 15 idées de contenu pour le mois</li>
+                        <li>📊 Créer benchmark créatifs de votre secteur</li>
+                        <li>📚 Constituer bibliothèque de prompts marketing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-xl p-6 mt-8">
+                <h4 class="font-semibold text-blue-300 mb-3">💡 Prochaines étapes</h4>
+                <ul class="text-sm text-gray-300 space-y-2">
+                    <li>• <strong>Semaine 1 :</strong> Mettre en place workflow hebdo trends</li>
+                    <li>• <strong>Semaine 2 :</strong> Premier competitive intelligence report</li>
+                    <li>• <strong>Semaine 3 :</strong> Optimiser une campagne avec variantes IA</li>
+                    <li>• <strong>Mois 1 :</strong> Mesurer ROI temps (heures économisées)</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="py-8 px-4 border-t border-gray-800 mt-12">
+        <div class="max-w-6xl mx-auto text-center text-gray-400 text-sm">
+            <p>Veille Stratégique et Analyse des Tendances IA - 2025-2026</p>
+            <p class="mt-2">EEMI - Bachelor Double Diplôme - Marketing Digital - Module terminé ✅</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrolled = window.scrollY;
+            const progress = (scrolled / documentHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        });
+
+        const quizQuestions = [
+            {
+                question: "Quel template de prompt utiliser pour décrypter la stratégie publicitaire d'un concurrent ?",
+                options: [
+                    { text: "Template 'Competitive Intelligence' (analyse campagne)", correct: true },
+                    { text: "Template 'Générateur d'idées' (création contenu)", correct: false },
+                    { text: "Template 'Benchmark créatifs' (comparaison visuels)", correct: false },
+                    { text: "Aucun template, faire manuellement", correct: false }
+                ],
+                explanation: "Le template 'Competitive Intelligence' est spécifiquement conçu pour analyser les campagnes concurrents : message, cible, créatifs, budget, insights actionnables. Le benchmark compare les créatifs mais n'analyse pas la stratégie globale."
+            },
+            {
+                question: "Dans le workflow 'Veille Social Media Hebdo', combien de temps prend l'analyse IA ?",
+                options: [
+                    { text: "20 minutes (sur 1h totale)", correct: true },
+                    { text: "5 minutes", correct: false },
+                    { text: "45 minutes (presque tout le temps)", correct: false },
+                    { text: "2 heures", correct: false }
+                ],
+                explanation: "Le workflow dure 1h au total : 20min collecte + 20min analyse IA + 15min idéation + 5min planning. L'IA prend environ 1/3 du temps pour analyser les trends collectés."
+            },
+            {
+                question: "Quel élément est ESSENTIEL dans un prompt marketing pour obtenir de bons résultats ?",
+                options: [
+                    { text: "Contexte marque : secteur, cible, ton, objectif", correct: true },
+                    { text: "Utiliser beaucoup d'emojis partout", correct: false },
+                    { text: "Écrire en MAJUSCULES pour insister", correct: false },
+                    { text: "Ne jamais donner d'exemples", correct: false }
+                ],
+                explanation: "Le contexte marque (secteur, cible, ton, objectif) permet à l'IA de personnaliser ses outputs. Sans ce contexte, les résultats seront génériques et inutilisables. Les emojis/majuscules sont cosmétiques, et les exemples AIDENT l'IA."
+            },
+            {
+                question: "Combien de variantes de copy le template 'Optimisation copy' génère-t-il ?",
+                options: [
+                    { text: "5 variantes (émotionnelle, bénéfices, urgence, question, social proof)", correct: true },
+                    { text: "1 variante unique", correct: false },
+                    { text: "20 variantes", correct: false },
+                    { text: "Aucune, il faut les écrire manuellement", correct: false }
+                ],
+                explanation: "Le template génère 5 variantes stratégiques : émotionnelle, bénéfices, urgence, question, social proof. Chacune teste un levier psychologique différent. Vous gardez les 2-3 meilleures pour A/B test."
+            },
+            {
+                question: "Quel est le principal gain de temps en utilisant l'IA pour la veille marketing ?",
+                options: [
+                    { text: "5-10h/semaine économisées (analyse automatisée vs manuelle)", correct: true },
+                    { text: "30 secondes/semaine", correct: false },
+                    { text: "Aucun gain, c'est plus long avec l'IA", correct: false },
+                    { text: "1h/mois maximum", correct: false }
+                ],
+                explanation: "Workflows hebdo trends (économise 2h), competitive intelligence mensuel (économise 3h), optimisation copy (économise 1-2h/campagne) = 5-10h/semaine au total. C'est 1-2 jours de travail par mois !"
+            },
+            {
+                question: "Quelle source gratuite permet de collecter les top trends TikTok/Instagram ?",
+                options: [
+                    { text: "TikTok Creative Center (gratuit, officiel)", correct: true },
+                    { text: "SEMrush (payant ~119€/mois)", correct: false },
+                    { text: "Brandwatch (payant enterprise)", correct: false },
+                    { text: "Il faut payer obligatoirement", correct: false }
+                ],
+                explanation: "TikTok Creative Center est 100% gratuit et montre : top ads, trending hashtags, sons populaires, formats performants. C'est THE source pour la veille trends social media. SEMrush/Brandwatch sont payants et ne font pas de veille trends."
+            }
+        ];
+
+        let currentQuiz = 0;
+        let quizScore = 0;
+        let quizAnswers = [];
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function renderQuizQuestion() {
+            if (currentQuiz >= quizQuestions.length) {
+                showQuizFinal();
+                return;
+            }
+
+            const question = quizQuestions[currentQuiz];
+            const container = document.getElementById('quizContainer');
+            const shuffledOptions = shuffleArray(question.options);
+            
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-200">Question ${currentQuiz + 1} sur ${quizQuestions.length}</h3>
+                    <p class="text-gray-300 mb-6">${question.question}</p>
+                    <div class="space-y-3" id="quiz-options">
+                        ${shuffledOptions.map((option, index) => `
+                            <div class="quiz-option p-4 rounded-lg" onclick="selectQuizOption(${index}, ${option.correct})" data-correct="${option.correct}">
+                                <p class="text-gray-200">${option.text}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            updateQuizProgress();
+            document.getElementById('quizSubmitBtn').disabled = true;
+            document.getElementById('quizNextBtn').classList.add('hidden');
+            document.getElementById('quizFeedback').innerHTML = '';
+        }
+
+        function updateQuizProgress() {
+            const progress = document.getElementById('quizProgress');
+            progress.innerHTML = quizQuestions.map((_, index) => {
+                let className = 'quiz-progress-dot';
+                if (index < currentQuiz) className += ' completed';
+                if (index === currentQuiz) className += ' current';
+                return `<div class="${className}"></div>`;
+            }).join('');
+        }
+
+        function selectQuizOption(index, isCorrect) {
+            const options = document.querySelectorAll('#quiz-options .quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+            
+            quizAnswers[currentQuiz] = { index, correct: isCorrect };
+            document.getElementById('quizSubmitBtn').disabled = false;
+        }
+
+        function submitQuizAnswer() {
+            const answer = quizAnswers[currentQuiz];
+            if (!answer) return;
+
+            const options = document.querySelectorAll('#quiz-options .quiz-option');
+            options.forEach((opt, idx) => {
+                opt.classList.add('disabled');
+                const isCorrect = opt.dataset.correct === 'true';
+                if (idx === answer.index) {
+                    opt.classList.add(answer.correct ? 'correct' : 'incorrect');
+                } else if (isCorrect) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (answer.correct) {
+                quizScore++;
+            }
+
+            const question = quizQuestions[currentQuiz];
+            const feedback = document.getElementById('quizFeedback');
+            feedback.innerHTML = `
+                <div class="p-4 rounded-lg ${answer.correct ? 'bg-green-900/30 border-l-4 border-green-500' : 'bg-red-900/30 border-l-4 border-red-500'}">
+                    <p class="font-semibold ${answer.correct ? 'text-green-300' : 'text-red-300'} mb-2">
+                        ${answer.correct ? '✓ Correct !' : '✗ Incorrect'}
+                    </p>
+                    <p class="text-sm text-gray-300">${question.explanation}</p>
+                </div>
+            `;
+
+            document.getElementById('quizSubmitBtn').classList.add('hidden');
+            document.getElementById('quizNextBtn').classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            currentQuiz++;
+            if (currentQuiz < quizQuestions.length) {
+                renderQuizQuestion();
+                document.getElementById('quizSubmitBtn').classList.remove('hidden');
+            } else {
+                showQuizFinal();
+            }
+        }
+
+        function showQuizFinal() {
+            const container = document.getElementById('quizContainer');
+            const percentage = Math.round((quizScore / quizQuestions.length) * 100);
+            
+            container.innerHTML = `
+                <div class="text-center p-8">
+                    <h3 class="text-2xl font-bold text-blue-300 mb-4">Quiz terminé !</h3>
+                    <div class="text-6xl mb-4">${percentage >= 80 ? '🎉' : percentage >= 60 ? '👍' : '📚'}</div>
+                    <p class="text-xl text-gray-200 mb-2">Votre score : <span class="font-bold text-blue-400">${quizScore}/${quizQuestions.length}</span></p>
+                    <p class="text-lg text-gray-300">${percentage}%</p>
+                    <p class="text-sm text-gray-400 mt-4">
+                        ${percentage >= 80 ? 'Excellent ! Vous maîtrisez les workflows marketing IA.' : 
+                          percentage >= 60 ? 'Bien ! Pratiquez les templates de prompts.' :
+                          'Relisez les sections sur le prompting marketing.'}
+                    </p>
+                </div>
+            `;
+            
+            document.getElementById('quizSubmitBtn').classList.add('hidden');
+            document.getElementById('quizNextBtn').classList.add('hidden');
+            document.getElementById('quizFeedback').innerHTML = '';
+            document.getElementById('quizProgress').innerHTML = quizQuestions.map(() => '<div class="quiz-progress-dot completed"></div>').join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuizQuestion();
+        });
+    </script>
+</body>
+</html>

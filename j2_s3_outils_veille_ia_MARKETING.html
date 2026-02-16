@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J2-S3 : Outils et Méthodologie de Veille IA - Marketing Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%); min-height: 100vh; }
+        .section-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(148, 163, 184, 0.1); transition: all 0.3s ease; }
+        .section-card:hover { background: rgba(30, 41, 59, 0.8); border-color: rgba(148, 163, 184, 0.2); }
+        .gradient-text { background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .chapter-number { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .quiz-option { background: rgba(30, 41, 59, 0.4); border: 2px solid rgba(148, 163, 184, 0.2); transition: all 0.3s ease; cursor: pointer; }
+        .quiz-option:hover:not(.disabled) { background: rgba(30, 41, 59, 0.7); border-color: rgba(96, 165, 250, 0.5); transform: translateX(5px); }
+        .quiz-option.selected { background: rgba(59, 130, 246, 0.2); border-color: #3b82f6; }
+        .quiz-option.correct { background: rgba(34, 197, 94, 0.2); border-color: #22c55e; animation: correctPulse 0.5s ease; }
+        .quiz-option.incorrect { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; animation: incorrectShake 0.5s ease; }
+        .quiz-option.disabled { opacity: 0.6; cursor: not-allowed; }
+        @keyframes correctPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+        @keyframes incorrectShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .progress-bar { background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%); height: 4px; transition: width 0.5s ease; }
+        .highlight-box { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border-left: 4px solid #3b82f6; padding: 1.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+        .nav-btn { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); transition: all 0.3s ease; }
+        .nav-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3); }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .example-card { background: rgba(15, 23, 42, 0.6); border-left: 3px solid #8b5cf6; padding: 1.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem; }
+        ul.custom-list { list-style: none; padding-left: 0; }
+        ul.custom-list li { position: relative; padding-left: 3rem; margin-bottom: 2.5rem; }
+        ul.custom-list li:before { content: "▹"; position: absolute; left: 0; color: #3b82f6; font-weight: bold; }
+        .quiz-progress { display: flex; gap: 1rem; justify-content: center; margin-bottom: 4rem; }
+        .quiz-progress-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(148, 163, 184, 0.3); transition: all 0.3s ease; }
+        .quiz-progress-dot.completed { background: #22c55e; }
+        .quiz-progress-dot.current { background: #3b82f6; transform: scale(1.5); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.6s ease-out; }
+        details summary { cursor: pointer; user-select: none; padding: 3rem; background: rgba(59, 130, 246, 0.1); border-radius: 0.5rem; margin-bottom: 2rem; }
+        details summary:hover { background: rgba(59, 130, 246, 0.2); }
+        details[open] summary { background: rgba(59, 130, 246, 0.2); border-bottom: 2px solid #3b82f6; margin-bottom: 4rem; }
+        details { margin-bottom: 4rem; }
+        details > div { margin-top: 3rem; }
+        section { margin-bottom: 16rem; }
+        .section-card { margin-bottom: 8rem; }
+        p { margin-bottom: 3rem; }
+        .space-y-6 > * + * { margin-top: 4rem; }
+        .space-y-4 > * + * { margin-top: 3rem; }
+        .space-y-3 > * + * { margin-top: 2.5rem; }
+        .space-y-2 > * + * { margin-top: 2rem; }
+        .highlight-box { margin-top: 3rem; margin-bottom: 3rem; padding: 3rem; }
+        .example-card { margin-top: 3rem; margin-bottom: 3rem; padding: 3rem; }
+        ul, ol { margin-top: 2.5rem; margin-bottom: 2.5rem; }
+        ul li, ol li { margin-bottom: 2rem; }
+        h2, h3, h4 { margin-top: 4rem; margin-bottom: 3rem; }
+        h2:first-child, h3:first-child, h4:first-child { margin-top: 0; }
+        .border-l-4 { margin-top: 3rem; margin-bottom: 3rem; padding: 3rem; }
+        .grid { gap: 3rem; }
+        div[class*="bg-gradient"] { margin-top: 3rem; margin-bottom: 3rem; }
+        div[class*="bg-slate"] { margin-top: 2.5rem; margin-bottom: 2.5rem; }
+        div[class*="bg-blue"] { margin-top: 2.5rem; margin-bottom: 2.5rem; }
+        div[class*="bg-purple"] { margin-top: 2.5rem; margin-bottom: 2.5rem; }
+        table { margin-top: 3rem; margin-bottom: 3rem; }
+        .quiz-option { margin-bottom: 2rem; }
+        .tool-card { background: rgba(15, 23, 42, 0.8); border: 2px solid rgba(59, 130, 246, 0.2); transition: all 0.3s ease; }
+        .tool-card:hover { border-color: rgba(59, 130, 246, 0.5); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2); }
+    </style>
+</head>
+<body class="text-gray-100">
+    <div class="fixed top-0 left-0 w-full h-1 bg-gray-800 z-50">
+        <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+    </div>
+
+    <header class="sticky top-1 z-40 py-6 px-4 backdrop-blur-md bg-slate-900/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold gradient-text">Veille Stratégique et Analyse des Tendances IA</h1>
+                    <p class="text-gray-400 mt-1">Jour 2 - Séance 3 : Outils et Méthodologie de Veille IA - Marketing Digital</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        
+        <!-- Objectifs -->
+        <section id="objectifs" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">01</span>
+                <span class="gradient-text">Objectifs de la séance</span>
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-400">Maîtriser</h3>
+                    <p class="text-gray-300">Les outils de veille pour le marketing digital et l'IA créative</p>
+                </div>
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-400">Organiser</h3>
+                    <p class="text-gray-300">Une veille concurrentielle et trends social media efficace</p>
+                </div>
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-lg mb-3 text-blue-400">Créer</h3>
+                    <p class="text-gray-300">Son dispositif de veille marketing personnalisé</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rappel -->
+        <div class="bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/30 rounded-xl p-8 mb-10">
+            <h3 class="text-xl font-semibold text-purple-300 mb-4">📚 Rappel rapide - Jour 1</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <p class="font-semibold text-blue-300 mb-3">Veille Stratégique</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• 5 types de veille : concurrentielle, techno, commerciale, réglementaire, e-réputation</li>
+                        <li>• Signaux faibles et détection des tendances émergentes</li>
+                        <li>• Cycle : Définir → Collecter → Analyser → Diffuser → Évaluer</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-semibold text-purple-300 mb-3">IA Générative</p>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>• GenAI : création de contenu (texte, image, vidéo, audio)</li>
+                        <li>• ChatGPT, Perplexity, Gemini, Midjourney, Runway</li>
+                        <li>• Applications marketing : contenu, personnalisation, automation</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="text-sm text-gray-400 mt-4">
+                <strong class="text-yellow-300">Aujourd'hui :</strong> On applique ces concepts au <strong class="text-blue-400">marketing digital</strong> avec une veille orientée tendances, concurrents, et outils créatifs IA.
+            </p>
+        </div>
+
+        <!-- Écosystème IA Marketing -->
+        <section id="ecosysteme" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">02</span>
+                <span class="gradient-text">L'écosystème IA Marketing à surveiller</span>
+            </h2>
+
+            <p class="text-gray-300">
+                Pour un professionnel du marketing digital, la veille IA doit être <strong class="text-blue-400">orientée business</strong> : 
+                outils créatifs, tendances consommateurs, stratégies concurrents, nouveaux formats.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="tool-card p-6 rounded-xl">
+                    <h3 class="text-lg font-semibold text-blue-300 mb-4 flex items-center">
+                        <span class="text-2xl mr-2">🎨</span>
+                        Domaines IA à surveiller (Marketing)
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="bg-blue-900/50 p-3 rounded">
+                            <p class="font-semibold text-blue-300 text-sm">🖼️ IA Créative (GenAI Design)</p>
+                            <p class="text-xs text-gray-300"><strong>Outils :</strong> Midjourney, DALL-E, Canva AI, Adobe Firefly</p>
+                            <p class="text-xs text-gray-400 mt-1">→ Création visuelle, assets publicitaires, A/B testing créatifs</p>
+                        </div>
+                        <div class="bg-purple-900/50 p-3 rounded">
+                            <p class="font-semibold text-purple-300 text-sm">✍️ IA Rédactionnelle (Copywriting)</p>
+                            <p class="text-xs text-gray-300"><strong>Outils :</strong> Jasper, Copy.ai, ChatGPT, Claude</p>
+                            <p class="text-xs text-gray-400 mt-1">→ Ads copy, landing pages, posts social media, emails</p>
+                        </div>
+                        <div class="bg-green-900/50 p-3 rounded">
+                            <p class="font-semibold text-green-300 text-sm">🎥 IA Vidéo & Audio</p>
+                            <p class="text-xs text-gray-300"><strong>Outils :</strong> Runway, Sora, ElevenLabs, HeyGen</p>
+                            <p class="text-xs text-gray-400 mt-1">→ Vidéos courtes, avatars IA, voiceovers, montage automatique</p>
+                        </div>
+                        <div class="bg-yellow-900/50 p-3 rounded">
+                            <p class="font-semibold text-yellow-300 text-sm">🤖 Marketing Automation + IA</p>
+                            <p class="text-xs text-gray-300"><strong>Outils :</strong> HubSpot AI, Drift, Intercom, ActiveCampaign</p>
+                            <p class="text-xs text-gray-400 mt-1">→ Chatbots, personnalisation, lead scoring, nurturing</p>
+                        </div>
+                        <div class="bg-red-900/50 p-3 rounded">
+                            <p class="font-semibold text-red-300 text-sm">📊 Analytics & Insights IA</p>
+                            <p class="text-xs text-gray-300"><strong>Outils :</strong> Google Analytics 4, Mixpanel, Amplitude</p>
+                            <p class="text-xs text-gray-400 mt-1">→ Prédictions comportement, segmentation auto, recommandations</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card p-6 rounded-xl">
+                    <h3 class="text-lg font-semibold text-purple-300 mb-4 flex items-center">
+                        <span class="text-2xl mr-2">📱</span>
+                        Ce qu'il faut surveiller
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-blue-200 mb-2">🔥 Tendances & Formats émergents</h4>
+                            <p class="text-xs text-gray-300">TikTok trends, Reels formats, nouveaux types de contenu viral</p>
+                            <p class="text-xs text-gray-400 mt-1"><strong>Sources :</strong> TikTok Creative Center, Meta Business Suite Insights</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-purple-200 mb-2">👥 Influenceurs & Créateurs</h4>
+                            <p class="text-xs text-gray-300">Micro-influenceurs, créateurs IA, nouveaux formats sponsorisés</p>
+                            <p class="text-xs text-gray-400 mt-1"><strong>Sources :</strong> Modash, HypeAuditor, influData</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-green-200 mb-2">🏢 Campagnes concurrents</h4>
+                            <p class="text-xs text-gray-300">Nouveaux produits, positionnement, stratégies de contenu, budgets pub</p>
+                            <p class="text-xs text-gray-400 mt-1"><strong>Sources :</strong> Meta Ad Library, Google Ads Transparency</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-yellow-200 mb-2">🛠️ Nouveaux outils martech</h4>
+                            <p class="text-xs text-gray-300">Plateformes IA marketing, intégrations, features lancées</p>
+                            <p class="text-xs text-gray-400 mt-1"><strong>Sources :</strong> Product Hunt, G2, Capterra</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example-card p-6 rounded-xl">
+                <h4 class="font-semibold text-yellow-300 mb-3">💡 Exemple de périmètre : Community Manager</h4>
+                <p class="text-sm text-gray-300 mb-3">
+                    <strong class="text-blue-400">Axes de veille :</strong>
+                </p>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li>• <strong>Tendances social media</strong> - TikTok/Instagram trends, formats viraux, nouvelles features</li>
+                    <li>• <strong>Outils IA créatifs</strong> - Canva AI, CapCut, générateurs de posts</li>
+                    <li>• <strong>Concurrents</strong> - Stratégie de contenu, engagement, campagnes sponsorisées</li>
+                    <li>• <strong>Influenceurs</strong> - Nouveaux créateurs, partenariats, performances</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Sources marketing -->
+        <section id="sources" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">03</span>
+                <span class="gradient-text">Sources de veille Marketing Digital + IA</span>
+            </h2>
+
+            <p class="text-gray-300">
+                Pour le marketing, privilégiez les <strong class="text-blue-400">sources orientées business</strong> plutôt que technique/research.
+            </p>
+
+            <details open>
+                <summary class="font-semibold text-lg text-blue-300">📰 Newsletters Marketing IA (incontournables)</summary>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-blue-300 mb-3">Marketing AI Institute</h4>
+                        <p class="text-sm text-gray-300 mb-2">Newsletter hebdo sur IA + marketing</p>
+                        <p class="text-xs text-gray-400">✓ Cas d'usage, outils, stratégies</p>
+                        <p class="text-xs text-gray-400">✓ Interviews CMO & experts</p>
+                    </div>
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-purple-300 mb-3">The Neuron (Business AI)</h4>
+                        <p class="text-sm text-gray-300 mb-2">Daily digest IA business (3x/semaine)</p>
+                        <p class="text-xs text-gray-400">✓ Actualité IA applicable marketing</p>
+                        <p class="text-xs text-gray-400">✓ Outils découverte</p>
+                    </div>
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-green-300 mb-3">Marketing Brew</h4>
+                        <p class="text-sm text-gray-300 mb-2">Actualité marketing quotidienne</p>
+                        <p class="text-xs text-gray-400">✓ Section dédiée IA & martech</p>
+                        <p class="text-xs text-gray-400">✓ Analyse tendances</p>
+                    </div>
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-yellow-300 mb-3">Social Media Today</h4>
+                        <p class="text-sm text-gray-300 mb-2">Tendances social media + IA</p>
+                        <p class="text-xs text-gray-400">✓ Nouveautés plateformes</p>
+                        <p class="text-xs text-gray-400">✓ Best practices créatifs</p>
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary class="font-semibold text-lg text-purple-300">🎯 Médias & Blogs Marketing (quotidien)</summary>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-blue-300 mb-2 text-sm">📱 Social Media Examiner</h4>
+                        <p class="text-xs text-gray-300">Stratégies social media, études de cas</p>
+                    </div>
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-purple-300 mb-2 text-sm">📊 HubSpot Marketing Blog</h4>
+                        <p class="text-xs text-gray-300">Inbound, content marketing, automation</p>
+                    </div>
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-green-300 mb-2 text-sm">💡 Neil Patel Blog</h4>
+                        <p class="text-xs text-gray-300">SEO, growth hacking, analytics</p>
+                    </div>
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-yellow-300 mb-2 text-sm">🎨 The Drum</h4>
+                        <p class="text-xs text-gray-300">Créativité, campagnes, tendances design</p>
+                    </div>
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-red-300 mb-2 text-sm">📺 Adweek</h4>
+                        <p class="text-xs text-gray-300">Publicité, médias, branding</p>
+                    </div>
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-blue-300 mb-2 text-sm">🇫🇷 BDM (Blog du Modérateur)</h4>
+                        <p class="text-xs text-gray-300">Actualité digitale française</p>
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary class="font-semibold text-lg text-green-300">👥 Influenceurs Marketing à suivre (LinkedIn/X)</summary>
+                <div class="grid md:grid-cols-4 gap-4">
+                    <div class="bg-slate-900/50 p-4 rounded">
+                        <p class="font-semibold text-blue-300 text-sm mb-1">Gary Vaynerchuk</p>
+                        <p class="text-xs text-gray-400">Social media, branding, tendances</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded">
+                        <p class="font-semibold text-purple-300 text-sm mb-1">Ann Handley</p>
+                        <p class="text-xs text-gray-400">Content marketing, storytelling</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded">
+                        <p class="font-semibold text-green-300 text-sm mb-1">Rand Fishkin</p>
+                        <p class="text-xs text-gray-400">SEO, growth, analytics</p>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded">
+                        <p class="font-semibold text-yellow-300 text-sm mb-1">Seth Godin</p>
+                        <p class="text-xs text-gray-400">Marketing philosophie, innovation</p>
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary class="font-semibold text-lg text-yellow-300">🛠️ Plateformes de veille outils (Product Discovery)</summary>
+                <div class="space-y-4">
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-blue-300 mb-3">Product Hunt</h4>
+                        <p class="text-sm text-gray-300 mb-2">Nouveaux outils IA lancés quotidiennement</p>
+                        <p class="text-xs text-gray-400"><strong>À surveiller :</strong> Catégories "Marketing", "Design Tools", "Productivity"</p>
+                        <p class="text-xs text-gray-400 mt-2"><strong>Routine :</strong> Check daily top 5 produits + filtrer par "AI"</p>
+                    </div>
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-purple-300 mb-3">G2 & Capterra</h4>
+                        <p class="text-sm text-gray-300 mb-2">Reviews et comparatifs martech</p>
+                        <p class="text-xs text-gray-400"><strong>Usage :</strong> Identifier nouveaux leaders, lire reviews utilisateurs</p>
+                    </div>
+                    <div class="highlight-box p-4 rounded-xl">
+                        <h4 class="font-semibold text-green-300 mb-3">There's An AI For That</h4>
+                        <p class="text-sm text-gray-300 mb-2">Répertoire exhaustif d'outils IA</p>
+                        <p class="text-xs text-gray-400"><strong>Usage :</strong> Découvrir outils de niche par cas d'usage</p>
+                    </div>
+                </div>
+            </details>
+
+            <div class="example-card p-6 rounded-xl mt-8">
+                <h4 class="font-semibold text-yellow-300 mb-3">🎯 Liste de démarrage : 10 sources essentielles</h4>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="font-semibold text-blue-300 mb-2">Newsletters (5) :</p>
+                        <ol class="text-xs text-gray-300 space-y-1">
+                            <li>1. Marketing AI Institute (hebdo)</li>
+                            <li>2. The Neuron (3x/semaine)</li>
+                            <li>3. Marketing Brew (quotidien)</li>
+                            <li>4. Social Media Today (quotidien)</li>
+                            <li>5. BDM Newsletter (quotidien FR)</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-purple-300 mb-2">Veille active (5) :</p>
+                        <ol class="text-xs text-gray-300 space-y-1">
+                            <li>1. Product Hunt (daily top 5)</li>
+                            <li>2. LinkedIn : Gary Vee, Ann Handley</li>
+                            <li>3. TikTok Creative Center (trends)</li>
+                            <li>4. Meta Ad Library (concurrents)</li>
+                            <li>5. HubSpot Blog (weekly digest)</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QCM 1 -->
+        <section id="qcm1" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="text-3xl mr-4">📝</span>
+                <span class="gradient-text">QCM 1 : Écosystème et sources veille marketing</span>
+            </h2>
+            
+            <div class="quiz-progress" id="quiz1Progress"></div>
+            <div id="quiz1Container"></div>
+            
+            <div class="mt-6 flex items-center justify-between">
+                <button id="quiz1SubmitBtn" onclick="submitQuiz1Answer()" class="nav-btn text-white px-8 py-3 rounded-lg font-semibold" disabled>
+                    Valider la réponse
+                </button>
+                <button id="quiz1NextBtn" onclick="nextQuiz1Question()" class="nav-btn text-white px-8 py-3 rounded-lg font-semibold hidden">
+                    Question suivante →
+                </button>
+                <div id="quiz1Score" class="text-lg font-semibold"></div>
+            </div>
+            
+            <div id="quiz1Feedback" class="mt-6"></div>
+        </section>
+
+        <!-- Outils veille marketing -->
+        <section id="outils" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">04</span>
+                <span class="gradient-text">Outils de veille pour le marketing digital</span>
+            </h2>
+
+            <p class="text-gray-300">
+                Combiner outils <strong class="text-blue-400">gratuits</strong> (Feedly, Google Alerts) avec outils <strong class="text-purple-400">spécialisés marketing</strong> 
+                (social listening, ad spy, trends).
+            </p>
+
+            <details open>
+                <summary class="font-semibold text-lg text-blue-300">🔧 Outils gratuits essentiels</summary>
+                <div class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="tool-card p-6 rounded-xl">
+                            <h4 class="font-semibold text-blue-300 mb-3">📰 Feedly (Agrégateur RSS)</h4>
+                            <p class="text-sm text-gray-300 mb-4">Centraliser blogs marketing et actualité IA</p>
+                            
+                            <p class="text-xs font-semibold text-gray-400 mb-2">SETUP MARKETING :</p>
+                            <div class="bg-slate-900/50 p-3 rounded text-xs">
+                                <p class="text-gray-300 mb-2"><strong class="text-blue-300">Dossier 1 - IA Marketing</strong></p>
+                                <ul class="text-gray-400 space-y-1 ml-4">
+                                    <li>• Marketing AI Institute</li>
+                                    <li>• HubSpot Marketing Blog</li>
+                                    <li>• Neil Patel Blog</li>
+                                </ul>
+                                
+                                <p class="text-gray-300 mb-2 mt-3"><strong class="text-purple-300">Dossier 2 - Social Media</strong></p>
+                                <ul class="text-gray-400 space-y-1 ml-4">
+                                    <li>• Social Media Examiner</li>
+                                    <li>• Social Media Today</li>
+                                    <li>• Buffer Blog</li>
+                                </ul>
+                                
+                                <p class="text-gray-300 mb-2 mt-3"><strong class="text-green-300">Dossier 3 - Outils & Produits</strong></p>
+                                <ul class="text-gray-400 space-y-1 ml-4">
+                                    <li>• Product Hunt (flux RSS)</li>
+                                    <li>• TechCrunch Startups</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="tool-card p-6 rounded-xl">
+                            <h4 class="font-semibold text-purple-300 mb-3">🔔 Google Alerts</h4>
+                            <p class="text-sm text-gray-300 mb-4">Surveillance concurrents et mots-clés</p>
+                            
+                            <p class="text-xs font-semibold text-gray-400 mb-2">ALERTES MARKETING À CRÉER :</p>
+                            <div class="bg-slate-900/50 p-3 rounded text-xs space-y-2">
+                                <div>
+                                    <p class="text-blue-300 font-semibold">Concurrents :</p>
+                                    <p class="text-gray-400">"[Marque Concurrent]" + (campagne OR lancement OR partenariat)</p>
+                                </div>
+                                <div>
+                                    <p class="text-purple-300 font-semibold">Outils IA :</p>
+                                    <p class="text-gray-400">"AI marketing tool" + launched</p>
+                                </div>
+                                <div>
+                                    <p class="text-green-300 font-semibold">Tendances :</p>
+                                    <p class="text-gray-400">"TikTok trend" OR "viral marketing"</p>
+                                </div>
+                                <div>
+                                    <p class="text-yellow-300 font-semibold">Secteur :</p>
+                                    <p class="text-gray-400">"[Votre secteur]" + "digital marketing"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="tool-card p-4 rounded-xl">
+                            <h4 class="font-semibold text-green-300 mb-2 text-sm">📊 TikTok Creative Center</h4>
+                            <p class="text-xs text-gray-300 mb-2">Trends, top ads, hashtags performants (GRATUIT)</p>
+                            <p class="text-xs text-gray-400">→ Découvrir formats viraux, musiques tendance</p>
+                        </div>
+                        <div class="tool-card p-4 rounded-xl">
+                            <h4 class="font-semibold text-blue-300 mb-2 text-sm">📱 Meta Ad Library</h4>
+                            <p class="text-xs text-gray-300 mb-2">Toutes les pubs Facebook/Instagram (GRATUIT)</p>
+                            <p class="text-xs text-gray-400">→ Espionner campagnes concurrents</p>
+                        </div>
+                        <div class="tool-card p-4 rounded-xl">
+                            <h4 class="font-semibold text-purple-300 mb-2 text-sm">🔍 Google Trends</h4>
+                            <p class="text-xs text-gray-300 mb-2">Intérêt recherche par sujet (GRATUIT)</p>
+                            <p class="text-xs text-gray-400">→ Détecter tendances émergentes</p>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary class="font-semibold text-lg text-purple-300">💰 Outils payants (optionnels mais puissants)</summary>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="tool-card p-6 rounded-xl">
+                        <h4 class="font-semibold text-blue-300 mb-3">👂 Social Listening</h4>
+                        <div class="space-y-3">
+                            <div class="bg-slate-900/50 p-3 rounded">
+                                <p class="font-semibold text-blue-200 text-sm mb-1">Mention (~29€/mois)</p>
+                                <p class="text-xs text-gray-300">Surveillance mentions marque + concurrents sur web et réseaux</p>
+                            </div>
+                            <div class="bg-slate-900/50 p-3 rounded">
+                                <p class="font-semibold text-purple-200 text-sm mb-1">Brand24 (~49€/mois)</p>
+                                <p class="text-xs text-gray-300">Analyse sentiment, influenceurs, reach</p>
+                            </div>
+                            <div class="bg-slate-900/50 p-3 rounded">
+                                <p class="font-semibold text-green-200 text-sm mb-1">Brandwatch (sur devis)</p>
+                                <p class="text-xs text-gray-300">Enterprise-level, analytics avancés</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-card p-6 rounded-xl">
+                        <h4 class="font-semibold text-purple-300 mb-3">🔎 Competitive Intelligence</h4>
+                        <div class="space-y-3">
+                            <div class="bg-slate-900/50 p-3 rounded">
+                                <p class="font-semibold text-blue-200 text-sm mb-1">SEMrush (~119€/mois)</p>
+                                <p class="text-xs text-gray-300">SEO, ads concurrents, keywords, trafic</p>
+                            </div>
+                            <div class="bg-slate-900/50 p-3 rounded">
+                                <p class="font-semibold text-purple-200 text-sm mb-1">SimilarWeb (~125€/mois)</p>
+                                <p class="text-xs text-gray-300">Analyse trafic sites concurrents</p>
+                            </div>
+                            <div class="bg-slate-900/50 p-3 rounded">
+                                <p class="font-semibold text-green-200 text-sm mb-1">SpyFu (~39€/mois)</p>
+                                <p class="text-xs text-gray-300">Historique ads Google concurrents</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <div class="example-card p-6 rounded-xl mt-8">
+                <h4 class="font-semibold text-yellow-300 mb-3">🎯 Stack recommandé (budget 0-50€/mois)</h4>
+                <div class="grid md:grid-cols-2 gap-6 text-sm">
+                    <div>
+                        <p class="font-semibold text-green-300 mb-3">✅ 100% GRATUIT :</p>
+                        <ul class="text-xs text-gray-300 space-y-1">
+                            <li>• Feedly (10 sources RSS)</li>
+                            <li>• Google Alerts (5-7 alertes)</li>
+                            <li>• TikTok Creative Center</li>
+                            <li>• Meta Ad Library</li>
+                            <li>• Google Trends</li>
+                            <li>• Notion (organisation)</li>
+                        </ul>
+                        <p class="text-xs text-gray-400 mt-2">→ Largement suffisant pour démarrer</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-blue-300 mb-3">💎 AVEC BUDGET (~30-50€/mois) :</p>
+                        <ul class="text-xs text-gray-300 space-y-1">
+                            <li>• Tout le gratuit ci-contre +</li>
+                            <li>• Mention ou Brand24 (social listening)</li>
+                            <li>• OU SpyFu (competitive ads)</li>
+                        </ul>
+                        <p class="text-xs text-gray-400 mt-2">→ Pour une veille pro complète</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workflow marketing -->
+        <section id="workflow" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="chapter-number text-4xl mr-4">05</span>
+                <span class="gradient-text">Workflow de veille pour Community Manager</span>
+            </h2>
+
+            <p class="text-gray-300 mb-6">
+                Exemple de routine quotidienne pour un <strong class="text-blue-400">Community Manager</strong> ou <strong class="text-purple-400">Social Media Manager</strong>.
+            </p>
+
+            <div class="grid md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-blue-900/30 p-4 rounded border-l-4 border-blue-500">
+                    <p class="font-semibold text-blue-300 mb-2 text-sm">1. Trends (10 min)</p>
+                    <ul class="text-xs text-gray-300 space-y-1">
+                        <li>• TikTok Creative Center</li>
+                        <li>• Check trending hashtags</li>
+                        <li>• Note 2-3 formats viraux</li>
+                    </ul>
+                </div>
+                <div class="bg-purple-900/30 p-4 rounded border-l-4 border-purple-500">
+                    <p class="font-semibold text-purple-300 mb-2 text-sm">2. Concurrents (10 min)</p>
+                    <ul class="text-xs text-gray-300 space-y-1">
+                        <li>• Meta Ad Library</li>
+                        <li>• Nouvelles campagnes ?</li>
+                        <li>• Screenshots best posts</li>
+                    </ul>
+                </div>
+                <div class="bg-green-900/30 p-4 rounded border-l-4 border-green-500">
+                    <p class="font-semibold text-green-300 mb-2 text-sm">3. Veille actus (5 min)</p>
+                    <ul class="text-xs text-gray-300 space-y-1">
+                        <li>• Scan Feedly</li>
+                        <li>• Nouveaux outils IA ?</li>
+                        <li>• Bookmark pour tests</li>
+                    </ul>
+                </div>
+                <div class="bg-yellow-900/30 p-4 rounded border-l-4 border-yellow-500">
+                    <p class="font-semibold text-yellow-300 mb-2 text-sm">4. Notion (5 min)</p>
+                    <ul class="text-xs text-gray-300 space-y-1">
+                        <li>• Logger trouvailles</li>
+                        <li>• Créer tasks tests</li>
+                        <li>• Partage équipe</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border-2 border-blue-500/30 rounded-xl p-6">
+                <h4 class="font-semibold text-blue-300 mb-4">📋 Template Notion : Veille Marketing</h4>
+                <div class="bg-slate-900/50 p-4 rounded font-mono text-xs">
+                    <p class="text-gray-400 mb-3">Database: Veille Marketing</p>
+                    <p class="text-gray-300">├── 📅 Date</p>
+                    <p class="text-gray-300">├── 🏷️ Type (select: Trend / Concurrent / Outil / Insight)</p>
+                    <p class="text-gray-300">├── 📱 Plateforme (select: TikTok / Instagram / LinkedIn / Web)</p>
+                    <p class="text-gray-300">├── 📝 Titre</p>
+                    <p class="text-gray-300">├── 🔗 Lien / Screenshot</p>
+                    <p class="text-gray-300">├── 💡 Insight (texte court)</p>
+                    <p class="text-gray-300">├── ⚡ Action (checkbox: À tester / En cours / Fait)</p>
+                    <p class="text-gray-300">└── 🎯 Priorité (select: High / Medium / Low)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Récap -->
+        <section id="recap" class="section-card rounded-2xl p-8 mb-10 fade-in">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="text-3xl mr-4">📋</span>
+                <span class="gradient-text">Récapitulatif</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-blue-300 mb-4">Ce que vous avez appris</h3>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>✅ Écosystème IA marketing (5 domaines clés)</li>
+                        <li>✅ 10+ sources essentielles marketing</li>
+                        <li>✅ Outils gratuits vs payants</li>
+                        <li>✅ Workflow quotidien CM/SMM</li>
+                        <li>✅ Template Notion organisation</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box p-6 rounded-xl">
+                    <h3 class="font-semibold text-purple-300 mb-4">Action immédiate</h3>
+                    <ul class="text-sm text-gray-300 space-y-2">
+                        <li>🎯 Configurer Feedly (3 dossiers min)</li>
+                        <li>🔔 Créer 3-5 Google Alerts</li>
+                        <li>📊 Explorer TikTok Creative Center</li>
+                        <li>🕵️ Auditer 2-3 concurrents (Meta Ad Library)</li>
+                        <li>📝 Créer base Notion veille marketing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-500/30 rounded-xl p-6 mt-8">
+                <h3 class="text-lg font-semibold text-green-300 mb-3">🎓 Prochaine séance</h3>
+                <p class="text-gray-300">
+                    <strong class="text-blue-400">J2-S4 : IA Générative pour la Veille Marketing</strong>
+                </p>
+                <ul class="text-sm text-gray-300 mt-3 space-y-1">
+                    <li>• Prompts marketing (analyse campagne, extraction trends, génération ideas)</li>
+                    <li>• Workflows automatisés (veille social + IA, competitive intelligence)</li>
+                    <li>• Cas pratiques : newsletter marketing, benchmark créatifs, trend report</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="py-8 px-4 border-t border-gray-800 mt-12">
+        <div class="max-w-6xl mx-auto text-center text-gray-400 text-sm">
+            <p>Veille Stratégique et Analyse des Tendances IA - 2025-2026</p>
+            <p class="mt-2">EEMI - Bachelor Double Diplôme - Jour 2 Séance 3 - Marketing Digital</p>
+        </div>
+    </footer>
+
+    <script>
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrolled = window.scrollY;
+            const progress = (scrolled / documentHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        });
+
+        // Quiz 1 Data
+        const quiz1Questions = [
+            {
+                question: "Pour un Community Manager, quel domaine IA est le PLUS prioritaire à surveiller ?",
+                options: [
+                    { text: "IA Créative (génération images/vidéos) + Copywriting IA", correct: true },
+                    { text: "Machine Learning avancé et algorithmes", correct: false },
+                    { text: "IA quantique et recherche fondamentale", correct: false },
+                    { text: "Computer Vision pour diagnostic médical", correct: false }
+                ],
+                explanation: "En marketing digital, l'IA créative (Midjourney, Canva AI, CapCut) et le copywriting IA (Jasper, ChatGPT) sont directement applicables au quotidien pour créer du contenu. Les autres domaines sont trop techniques/éloignés du métier."
+            },
+            {
+                question: "Quelle source est la PLUS adaptée pour suivre les tendances TikTok/Instagram ?",
+                options: [
+                    { text: "TikTok Creative Center + Social Media Examiner", correct: true },
+                    { text: "arXiv.org (papers de recherche)", correct: false },
+                    { text: "GitHub Trending", correct: false },
+                    { text: "Papers with Code", correct: false }
+                ],
+                explanation: "TikTok Creative Center (gratuit) montre les trends, top ads, hashtags performants. Social Media Examiner analyse les stratégies social media. arXiv/GitHub sont pour la veille technique, pas marketing."
+            },
+            {
+                question: "Quel outil GRATUIT permet d'espionner les campagnes publicitaires de concurrents ?",
+                options: [
+                    { text: "Meta Ad Library (Facebook/Instagram)", correct: true },
+                    { text: "SEMrush (payant ~119€/mois)", correct: false },
+                    { text: "Notion (organisation, pas veille concurrentielle)", correct: false },
+                    { text: "Feedly (agrégateur RSS)", correct: false }
+                ],
+                explanation: "Meta Ad Library est 100% gratuit et montre TOUTES les pubs actives Facebook/Instagram de n'importe quelle marque. SEMrush est payant. Notion organise mais ne fait pas de veille concurrentielle."
+            },
+            {
+                question: "Quelle newsletter est spécialisée en IA + Marketing (pas technique) ?",
+                options: [
+                    { text: "Marketing AI Institute", correct: true },
+                    { text: "Import AI (Jack Clark, très technique)", correct: false },
+                    { text: "arXiv cs.AI (papers de recherche)", correct: false },
+                    { text: "NeurIPS Conference (recherche académique)", correct: false }
+                ],
+                explanation: "Marketing AI Institute est spécialisé IA appliquée au marketing (cas d'usage business, outils, stratégies). Les autres sont trop techniques/research pour du marketing."
+            },
+            {
+                question: "Dans un workflow veille quotidien (30 min), que devrait faire un CM en PREMIER ?",
+                options: [
+                    { text: "Check trends TikTok/Instagram (10 min) pour détecter formats viraux", correct: true },
+                    { text: "Lire des papers de recherche IA (trop technique)", correct: false },
+                    { text: "Configurer des serveurs (hors scope)", correct: false },
+                    { text: "Attendre la fin de semaine (veille doit être régulière)", correct: false }
+                ],
+                explanation: "Pour un CM, les trends évoluent vite. Commencer par TikTok Creative Center / trending hashtags permet de détecter formats viraux à adapter rapidement. Papers de recherche ne sont pas pertinents pour ce métier."
+            },
+            {
+                question: "Quel est l'avantage principal d'utiliser Feedly pour la veille marketing ?",
+                options: [
+                    { text: "Centraliser tous les blogs marketing en un seul endroit (gain de temps)", correct: true },
+                    { text: "Remplacer complètement Google (faux)", correct: false },
+                    { text: "Créer des campagnes publicitaires (pas sa fonction)", correct: false },
+                    { text: "Garantir 100% de véracité (aucun outil ne garantit ça)", correct: false }
+                ],
+                explanation: "Feedly agrège flux RSS de tous vos blogs marketing préférés en un seul endroit. Au lieu de visiter 10 sites, vous scannez tout en 10 min. C'est un gain de temps massif, pas un outil de création ou de fact-checking."
+            }
+        ];
+
+        // Quiz system
+        let currentQuiz1 = 0;
+        let quiz1Score = 0;
+        let quiz1Answers = [];
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function renderQuiz1Question() {
+            if (currentQuiz1 >= quiz1Questions.length) {
+                showQuiz1Final();
+                return;
+            }
+
+            const question = quiz1Questions[currentQuiz1];
+            const container = document.getElementById('quiz1Container');
+            const shuffledOptions = shuffleArray(question.options);
+            
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-200">Question ${currentQuiz1 + 1} sur ${quiz1Questions.length}</h3>
+                    <p class="text-gray-300 mb-6">${question.question}</p>
+                    <div class="space-y-3" id="quiz1-options">
+                        ${shuffledOptions.map((option, index) => `
+                            <div class="quiz-option p-4 rounded-lg" onclick="selectQuiz1Option(${index}, ${option.correct})" data-correct="${option.correct}">
+                                <p class="text-gray-200">${option.text}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            updateQuiz1Progress();
+            document.getElementById('quiz1SubmitBtn').disabled = true;
+            document.getElementById('quiz1NextBtn').classList.add('hidden');
+            document.getElementById('quiz1Feedback').innerHTML = '';
+        }
+
+        function updateQuiz1Progress() {
+            const progress = document.getElementById('quiz1Progress');
+            progress.innerHTML = quiz1Questions.map((_, index) => {
+                let className = 'quiz-progress-dot';
+                if (index < currentQuiz1) className += ' completed';
+                if (index === currentQuiz1) className += ' current';
+                return `<div class="${className}"></div>`;
+            }).join('');
+        }
+
+        function selectQuiz1Option(index, isCorrect) {
+            const options = document.querySelectorAll('#quiz1-options .quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+            
+            quiz1Answers[currentQuiz1] = { index, correct: isCorrect };
+            document.getElementById('quiz1SubmitBtn').disabled = false;
+        }
+
+        function submitQuiz1Answer() {
+            const answer = quiz1Answers[currentQuiz1];
+            if (!answer) return;
+
+            const options = document.querySelectorAll('#quiz1-options .quiz-option');
+            options.forEach((opt, idx) => {
+                opt.classList.add('disabled');
+                const isCorrect = opt.dataset.correct === 'true';
+                if (idx === answer.index) {
+                    opt.classList.add(answer.correct ? 'correct' : 'incorrect');
+                } else if (isCorrect) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (answer.correct) {
+                quiz1Score++;
+            }
+
+            const question = quiz1Questions[currentQuiz1];
+            const feedback = document.getElementById('quiz1Feedback');
+            feedback.innerHTML = `
+                <div class="p-4 rounded-lg ${answer.correct ? 'bg-green-900/30 border-l-4 border-green-500' : 'bg-red-900/30 border-l-4 border-red-500'}">
+                    <p class="font-semibold ${answer.correct ? 'text-green-300' : 'text-red-300'} mb-2">
+                        ${answer.correct ? '✓ Correct !' : '✗ Incorrect'}
+                    </p>
+                    <p class="text-sm text-gray-300">${question.explanation}</p>
+                </div>
+            `;
+
+            document.getElementById('quiz1SubmitBtn').classList.add('hidden');
+            document.getElementById('quiz1NextBtn').classList.remove('hidden');
+        }
+
+        function nextQuiz1Question() {
+            currentQuiz1++;
+            if (currentQuiz1 < quiz1Questions.length) {
+                renderQuiz1Question();
+                document.getElementById('quiz1SubmitBtn').classList.remove('hidden');
+            } else {
+                showQuiz1Final();
+            }
+        }
+
+        function showQuiz1Final() {
+            const container = document.getElementById('quiz1Container');
+            const percentage = Math.round((quiz1Score / quiz1Questions.length) * 100);
+            
+            container.innerHTML = `
+                <div class="text-center p-8">
+                    <h3 class="text-2xl font-bold text-blue-300 mb-4">Quiz terminé !</h3>
+                    <div class="text-6xl mb-4">${percentage >= 80 ? '🎉' : percentage >= 60 ? '👍' : '📚'}</div>
+                    <p class="text-xl text-gray-200 mb-2">Votre score : <span class="font-bold text-blue-400">${quiz1Score}/${quiz1Questions.length}</span></p>
+                    <p class="text-lg text-gray-300">${percentage}%</p>
+                    <p class="text-sm text-gray-400 mt-4">
+                        ${percentage >= 80 ? 'Excellent ! Vous maîtrisez la veille marketing IA.' : 
+                          percentage >= 60 ? 'Bien ! Revoyez les sources marketing si besoin.' :
+                          'Relisez la section sur l\'écosystème marketing.'}
+                    </p>
+                </div>
+            `;
+            
+            document.getElementById('quiz1SubmitBtn').classList.add('hidden');
+            document.getElementById('quiz1NextBtn').classList.add('hidden');
+            document.getElementById('quiz1Feedback').innerHTML = '';
+            document.getElementById('quiz1Progress').innerHTML = quiz1Questions.map(() => '<div class="quiz-progress-dot completed"></div>').join('');
+        }
+
+        // Initialize quiz
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuiz1Question();
+        });
+    </script>
+</body>
+</html>
